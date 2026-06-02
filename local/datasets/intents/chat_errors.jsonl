@@ -1,0 +1,3 @@
+{"text": "quiero mandar plata", "intent": "AMBIGUOUS", "predictedIntent": "TRANSFER_THIRD_PARTY", "source": "dialogue_eval_fail", "caseId": "S007-T1", "entities": {}, "recordedAt": "2026-04-23T21:10:23.082512+00:00"}
+{"text": "a mi propia cuenta", "intent": "TRANSFER_OWN_ACCOUNTS", "predictedIntent": "CHECK_BALANCE", "source": "dialogue_eval_fail", "caseId": "S007-T2", "entities": {}, "recordedAt": "2026-04-23T21:10:23.082562+00:00"}
+{"text": "transferencia a terceros", "intent": "TRANSFER_THIRD_PARTY", "predictedIntent": "AMBIGUOUS", "source": "dialogue_eval_fail", "caseId": "S016-T2", "entities": {}, "recordedAt": "2026-04-23T21:10:23.082583+00:00"}

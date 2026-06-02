@@ -1,0 +1,24 @@
+{"scenarioId":"S001","turn":1,"userText":"hola, cuanto saldo tengo hoy","expectedIntent":"CHECK_BALANCE","expectedNextAction":"SHOW_BALANCE"}
+{"scenarioId":"S001","turn":2,"userText":"gracias, y quiero ver mis movimientos","expectedIntent":"CHECK_BALANCE","expectedNextAction":"SHOW_BALANCE"}
+{"scenarioId":"S002","turn":1,"userText":"quiero pagar mi tarjeta","expectedIntent":"PAY_CREDIT_CARD","expectedNextAction":"SHOW_PAY_CARD_OPTIONS"}
+{"scenarioId":"S002","turn":2,"userText":"la visa oro","expectedIntent":"PAY_CREDIT_CARD","expectedNextAction":"SHOW_PAY_CARD_OPTIONS"}
+{"scenarioId":"S003","turn":1,"userText":"quiero transferir a mi otra cuenta","expectedIntent":"TRANSFER_OWN_ACCOUNTS","expectedNextAction":"SHOW_TRANSFER_GUIDE"}
+{"scenarioId":"S003","turn":2,"userText":"de ahorro a corriente","expectedIntent":"TRANSFER_OWN_ACCOUNTS","expectedNextAction":"SHOW_TRANSFER_GUIDE"}
+{"scenarioId":"S004","turn":1,"userText":"quiero transferir a otra persona","expectedIntent":"TRANSFER_THIRD_PARTY","expectedNextAction":"SHOW_TRANSFER_GUIDE"}
+{"scenarioId":"S004","turn":2,"userText":"es a juan perez del bcp","expectedIntent":"TRANSFER_THIRD_PARTY","expectedNextAction":"SHOW_TRANSFER_GUIDE"}
+{"scenarioId":"S005","turn":1,"userText":"me ayudas con un prestamo personal","expectedIntent":"OUT_OF_SCOPE","expectedNextAction":"SHOW_SUPPORT"}
+{"scenarioId":"S005","turn":2,"userText":"entonces pasame con soporte","expectedIntent":"OUT_OF_SCOPE","expectedNextAction":"SHOW_SUPPORT"}
+{"scenarioId":"S006","turn":1,"userText":"hazlo rapido porfa","expectedIntent":"AMBIGUOUS","expectedNextAction":"ASK_CLARIFICATION"}
+{"scenarioId":"S006","turn":2,"userText":"quiero pagar tarjeta","expectedIntent":"PAY_CREDIT_CARD","expectedNextAction":"SHOW_PAY_CARD_OPTIONS"}
+{"scenarioId":"S007","turn":1,"userText":"quiero mandar plata","expectedIntent":"AMBIGUOUS","expectedNextAction":"ASK_CLARIFICATION"}
+{"scenarioId":"S007","turn":2,"userText":"a mi propia cuenta","expectedIntent":"TRANSFER_OWN_ACCOUNTS","expectedNextAction":"SHOW_TRANSFER_GUIDE"}
+{"scenarioId":"S008","turn":1,"userText":"estado de cuenta para sunat","expectedIntent":"OUT_OF_SCOPE","expectedNextAction":"SHOW_SUPPORT"}
+{"scenarioId":"S009","turn":1,"userText":"cancele mi tarjeta por favor","expectedIntent":"PAY_CREDIT_CARD","expectedNextAction":"SHOW_PAY_CARD_OPTIONS"}
+{"scenarioId":"S010","turn":1,"userText":"quisiera revisar cuanto debo de la tc","expectedIntent":"PAY_CREDIT_CARD","expectedNextAction":"SHOW_PAY_CARD_OPTIONS"}
+{"scenarioId":"S011","turn":1,"userText":"cuanto tengo en mi cuenta de ahorros","expectedIntent":"CHECK_BALANCE","expectedNextAction":"SHOW_BALANCE"}
+{"scenarioId":"S012","turn":1,"userText":"quiero pagar mi recibo de luz","expectedIntent":"OUT_OF_SCOPE","expectedNextAction":"SHOW_SUPPORT"}
+{"scenarioId":"S013","turn":1,"userText":"muestrame saldo y despues transferimos","expectedIntent":"CHECK_BALANCE","expectedNextAction":"SHOW_BALANCE"}
+{"scenarioId":"S014","turn":1,"userText":"paga tc","expectedIntent":"PAY_CREDIT_CARD","expectedNextAction":"SHOW_PAY_CARD_OPTIONS"}
+{"scenarioId":"S015","turn":1,"userText":"puedo hablar con un asesor humano","expectedIntent":"OUT_OF_SCOPE","expectedNextAction":"SHOW_SUPPORT"}
+{"scenarioId":"S016","turn":1,"userText":"quiero hacer una operacion","expectedIntent":"AMBIGUOUS","expectedNextAction":"ASK_CLARIFICATION"}
+{"scenarioId":"S016","turn":2,"userText":"transferencia a terceros","expectedIntent":"TRANSFER_THIRD_PARTY","expectedNextAction":"SHOW_TRANSFER_GUIDE"}

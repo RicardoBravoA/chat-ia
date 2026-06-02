@@ -1,0 +1,30 @@
+{"id":"E001","text":"quiero ver mis saldos","expectedIntent":"CHECK_BALANCE","expectedEntities":{},"sensitive":false}
+{"id":"E002","text":"cuanto tengo en mis cuentas","expectedIntent":"CHECK_BALANCE","expectedEntities":{},"sensitive":false}
+{"id":"E003","text":"ensename el saldo de todas mis cuentas","expectedIntent":"CHECK_BALANCE","expectedEntities":{},"sensitive":false}
+{"id":"E004","text":"balance actual","expectedIntent":"CHECK_BALANCE","expectedEntities":{},"sensitive":false}
+{"id":"E005","text":"quiero pagar la tarjeta","expectedIntent":"PAY_CREDIT_CARD","expectedEntities":{},"sensitive":true}
+{"id":"E006","text":"abona mi tc","expectedIntent":"PAY_CREDIT_CARD","expectedEntities":{},"sensitive":true}
+{"id":"E007","text":"paga 1500 a la oro","expectedIntent":"PAY_CREDIT_CARD","expectedEntities":{"amount":1500,"cardAlias":"oro"},"sensitive":true}
+{"id":"E008","text":"liquida tarjeta de credito","expectedIntent":"PAY_CREDIT_CARD","expectedEntities":{},"sensitive":true}
+{"id":"E009","text":"transfiere 1000 de nomina a ahorro","expectedIntent":"TRANSFER_OWN_ACCOUNTS","expectedEntities":{"amount":1000,"fromAccountAlias":"nomina","toAccountAlias":"ahorro"},"sensitive":true}
+{"id":"E010","text":"mueve 300 de principal a ahorro","expectedIntent":"TRANSFER_OWN_ACCOUNTS","expectedEntities":{"amount":300,"fromAccountAlias":"principal","toAccountAlias":"ahorro"},"sensitive":true}
+{"id":"E011","text":"pasa dinero entre mis cuentas","expectedIntent":"TRANSFER_OWN_ACCOUNTS","expectedEntities":{},"sensitive":true}
+{"id":"E012","text":"quiero transferir entre cuentas mias","expectedIntent":"TRANSFER_OWN_ACCOUNTS","expectedEntities":{},"sensitive":true}
+{"id":"E013","text":"transfiere 500 a maria lopez","expectedIntent":"TRANSFER_THIRD_PARTY","expectedEntities":{"amount":500,"beneficiaryName":"maria lopez"},"sensitive":true}
+{"id":"E014","text":"envia 3500 a juan","expectedIntent":"TRANSFER_THIRD_PARTY","expectedEntities":{"amount":3500,"beneficiaryName":"juan"},"sensitive":true}
+{"id":"E015","text":"quiero mandar dinero a un tercero","expectedIntent":"TRANSFER_THIRD_PARTY","expectedEntities":{},"sensitive":true}
+{"id":"E016","text":"depositale 200 a maria","expectedIntent":"TRANSFER_THIRD_PARTY","expectedEntities":{"amount":200,"beneficiaryName":"maria"},"sensitive":true}
+{"id":"E017","text":"quiero pagar","expectedIntent":"AMBIGUOUS","expectedEntities":{},"sensitive":false}
+{"id":"E018","text":"haz transferencia","expectedIntent":"AMBIGUOUS","expectedEntities":{},"sensitive":false}
+{"id":"E019","text":"ayuda","expectedIntent":"AMBIGUOUS","expectedEntities":{},"sensitive":false}
+{"id":"E020","text":"no reconozco un cargo","expectedIntent":"OUT_OF_SCOPE","expectedEntities":{},"sensitive":false}
+{"id":"E021","text":"quiero cancelar mi tarjeta fisica","expectedIntent":"OUT_OF_SCOPE","expectedEntities":{},"sensitive":false}
+{"id":"E022","text":"hipoteca","expectedIntent":"OUT_OF_SCOPE","expectedEntities":{},"sensitive":false}
+{"id":"E023","text":"reclamo por fraude","expectedIntent":"OUT_OF_SCOPE","expectedEntities":{},"sensitive":false}
+{"id":"E024","text":"solicitud de estado de cuenta fiscal anual","expectedIntent":"OUT_OF_SCOPE","expectedEntities":{},"sensitive":false}
+{"id":"E025","text":"pagar mi tarjeta hoy","expectedIntent":"PAY_CREDIT_CARD","expectedEntities":{},"sensitive":true}
+{"id":"E026","text":"abrir cuenta de ahorros en sucursal","expectedIntent":"OUT_OF_SCOPE","expectedEntities":{},"sensitive":false}
+{"id":"E027","text":"estado de cuenta","expectedIntent":"CHECK_BALANCE","expectedEntities":{},"sensitive":false}
+{"id":"E028","text":"cuenta de ahorros","expectedIntent":"CHECK_BALANCE","expectedEntities":{},"sensitive":false}
+{"id":"E029","text":"prestamo","expectedIntent":"OUT_OF_SCOPE","expectedEntities":{},"sensitive":false}
+{"id":"E030","text":"prestamo personal","expectedIntent":"OUT_OF_SCOPE","expectedEntities":{},"sensitive":false}

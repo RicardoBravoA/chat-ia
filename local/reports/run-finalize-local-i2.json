@@ -1,0 +1,215 @@
+{
+  "metadata": {
+    "version": "finalize-local-i2",
+    "date": "2026-04-18",
+    "datasetVersion": "eval_v1",
+    "operator": "local-user",
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-6",
+    "fewShot": {
+      "baseCount": 252,
+      "augmentCount": 19,
+      "dedupedTotal": 265,
+      "enabled": true,
+      "basePath": "/Users/ricardobravo/Documents/code/ia/local/datasets/intents/train_v1.jsonl",
+      "augmentPath": "/Users/ricardobravo/Documents/code/ia/local/datasets/intents/train_augment.jsonl"
+    }
+  },
+  "summary": {
+    "totalCases": 30,
+    "intentAccuracyGlobal": 0.1,
+    "intentAccuracySensitive": 0.0,
+    "entityExtractionAccuracy": 0.0,
+    "fallbackRate": 0.6333,
+    "rawFallbackRate": 1.0,
+    "spuriousFallbackCount": 19,
+    "rawFallbackCount": 30,
+    "clarificationRate": 1.0,
+    "unsafeExecutionCount": 0
+  },
+  "byFlow": {
+    "CHECK_BALANCE": {
+      "accuracy": 0.0,
+      "errors": [
+        {
+          "id": "E001",
+          "text": "quiero ver mis saldos",
+          "expectedIntent": "CHECK_BALANCE",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E002",
+          "text": "cuanto tengo en mis cuentas",
+          "expectedIntent": "CHECK_BALANCE",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E003",
+          "text": "ensename el saldo de todas mis cuentas",
+          "expectedIntent": "CHECK_BALANCE",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E004",
+          "text": "balance actual",
+          "expectedIntent": "CHECK_BALANCE",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E027",
+          "text": "estado de cuenta",
+          "expectedIntent": "CHECK_BALANCE",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E028",
+          "text": "cuenta de ahorros",
+          "expectedIntent": "CHECK_BALANCE",
+          "predictedIntent": "AMBIGUOUS"
+        }
+      ],
+      "entityErrors": []
+    },
+    "PAY_CREDIT_CARD": {
+      "accuracy": 0.0,
+      "confirmationRequiredRespected": true,
+      "errors": [
+        {
+          "id": "E005",
+          "text": "quiero pagar la tarjeta",
+          "expectedIntent": "PAY_CREDIT_CARD",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E006",
+          "text": "abona mi tc",
+          "expectedIntent": "PAY_CREDIT_CARD",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E007",
+          "text": "paga 1500 a la oro",
+          "expectedIntent": "PAY_CREDIT_CARD",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E008",
+          "text": "liquida tarjeta de credito",
+          "expectedIntent": "PAY_CREDIT_CARD",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E025",
+          "text": "pagar mi tarjeta hoy",
+          "expectedIntent": "PAY_CREDIT_CARD",
+          "predictedIntent": "AMBIGUOUS"
+        }
+      ],
+      "entityErrors": []
+    },
+    "TRANSFER_OWN_ACCOUNTS": {
+      "accuracy": 0.0,
+      "confirmationRequiredRespected": true,
+      "errors": [
+        {
+          "id": "E009",
+          "text": "transfiere 1000 de nomina a ahorro",
+          "expectedIntent": "TRANSFER_OWN_ACCOUNTS",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E010",
+          "text": "mueve 300 de principal a ahorro",
+          "expectedIntent": "TRANSFER_OWN_ACCOUNTS",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E011",
+          "text": "pasa dinero entre mis cuentas",
+          "expectedIntent": "TRANSFER_OWN_ACCOUNTS",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E012",
+          "text": "quiero transferir entre cuentas mias",
+          "expectedIntent": "TRANSFER_OWN_ACCOUNTS",
+          "predictedIntent": "AMBIGUOUS"
+        }
+      ],
+      "entityErrors": []
+    },
+    "TRANSFER_THIRD_PARTY": {
+      "accuracy": 0.0,
+      "confirmationRequiredRespected": true,
+      "errors": [
+        {
+          "id": "E013",
+          "text": "transfiere 500 a maria lopez",
+          "expectedIntent": "TRANSFER_THIRD_PARTY",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E014",
+          "text": "envia 3500 a juan",
+          "expectedIntent": "TRANSFER_THIRD_PARTY",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E015",
+          "text": "quiero mandar dinero a un tercero",
+          "expectedIntent": "TRANSFER_THIRD_PARTY",
+          "predictedIntent": "AMBIGUOUS"
+        },
+        {
+          "id": "E016",
+          "text": "depositale 200 a maria",
+          "expectedIntent": "TRANSFER_THIRD_PARTY",
+          "predictedIntent": "AMBIGUOUS"
+        }
+      ],
+      "entityErrors": []
+    }
+  },
+  "criticalIncidents": [],
+  "promotionGate": {
+    "thresholdsRef": "local/config/thresholds.json",
+    "failures": [
+      {
+        "code": "INTENT_GLOBAL_BELOW_MIN",
+        "message": "La precision global de intencion esta por debajo del minimo.",
+        "actual": 0.1,
+        "required": ">= 0.9",
+        "nextSteps": [
+          "Revisa `byFlow.*.errors` en el reporte JSON: anade frases similares a `local/datasets/intents/train_v1.jsonl`.",
+          "Ajusta el prompt de clasificacion (ejemplos few-shot por intencion).",
+          "Vuelve a correr el mismo `eval_v1.jsonl` y compara versiones."
+        ]
+      },
+      {
+        "code": "INTENT_SENSITIVE_BELOW_MIN",
+        "message": "La precision en intenciones sensibles (pagos/transferencias) es demasiado baja.",
+        "actual": 0.0,
+        "required": ">= 0.92",
+        "nextSteps": [
+          "Prioriza ejemplos en PAY_CREDIT_CARD, TRANSFER_OWN_ACCOUNTS, TRANSFER_THIRD_PARTY.",
+          "No relajes confirmacion: mejora deteccion, no reglas de seguridad."
+        ]
+      },
+      {
+        "code": "FALLBACK_RATE_TOO_HIGH",
+        "message": "Demasiados fallbacks espurios: el modelo usa AMBIGUOUS/OUT_OF_SCOPE cuando el benchmark espera otra intencion.",
+        "actual": 0.6333,
+        "required": "<= 0.1",
+        "nextSteps": [
+          "Revisa casos en byFlow.errors donde predictedIntent sea AMBIGUOUS u OUT_OF_SCOPE.",
+          "Anade esos textos a train_augment con la intencion correcta del benchmark.",
+          "No penalizan las respuestas correctas AMBIGUOUS/OUT_OF_SCOPE (ver rawFallbackRate en el reporte)."
+        ]
+      }
+    ]
+  },
+  "promotionDecision": {
+    "result": "RECHAZADO",
+    "reason": "La precision global de intencion esta por debajo del minimo."
+  }
+}

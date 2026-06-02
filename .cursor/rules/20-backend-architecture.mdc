@@ -1,0 +1,37 @@
+---
+description: Backend architecture standards for Kotlin JVM services
+alwaysApply: true
+---
+
+# Backend Architecture
+
+- **Kotlin JVM 21** multi-module project (not shared KMP with mobile). Group: `com.bank.banking`.
+- Hexagonal / clean separation: `domain` → `application` → `infrastructure-mongo` → `api`.
+- **Domain** owns models, ports, invariants, domain errors — zero framework imports.
+- **Application** owns use cases; depends only on domain ports.
+- **Infrastructure** implements ports (MongoDB, bcrypt, tokens, idempotency store).
+- **API** (Ktor): DTOs, routes, auth, intent classifiers, `BankingCompositionRoot` wiring.
+
+# Adding a feature (order)
+
+1. Domain model / port if needed.
+2. Use case in `application/usecase/`.
+3. Mongo adapter in `infrastructure-mongo/`.
+4. DTO + route in `api/`.
+5. Register in `BankingCompositionRoot.kt`.
+6. Unit tests with fake ports in `application/src/test/`.
+7. Chat SDUI: builders en `application/sdui/`; endpoint `POST /v1/chat/message`.
+
+# Data and Persistence
+
+- MongoDB database `banking`; bootstrap in `MongoBootstrap`.
+- Redis optional for cache, rate limiting, idempotency.
+- Design for auditability: timestamps, user refs, operation ids.
+
+# Quality Gates
+
+- JUnit 5 tests for every use case (happy + failure paths).
+- Payment flows: test `PayCreditCardValidation`, idempotency replay, insufficient funds.
+- No business logic in route handlers — delegate to use cases immediately.
+
+See `docs/testing-matrix.md` and `.cursor/rules/25-backend-api-conventions.mdc`.

@@ -1,0 +1,43 @@
+---
+description: Server-Driven UI for chat — mandatory architecture, layers, security and tests
+alwaysApply: true
+---
+
+# Chat = Server-Driven UI (SDUI)
+
+El **chat bancario** usa SDUI: el backend arma `uiTree` (JSON); mobile **solo renderiza** con catálogo Compose fijo.
+
+## Ownership (no mezclar capas)
+
+| Capa | Módulo | Responsabilidad |
+|------|--------|-----------------|
+| Modelos | `domain/model/sdui/` | `UiNode`, `UiAction`, `UiResponse` |
+| Armado UI | `application/sdui/` | Builders + `ChatPresentationPolicy` + `ChatUiBuilderFactory` |
+| Orquestación | `application/usecase/BuildChatUiUseCase` | classify → policy → builder |
+| HTTP | `api/` | `POST /v1/chat/message` — delegar, no armar UI aquí |
+| Renderer | `mobile/presentation/sdui/SduiRenderer` | `type` → Composable existente |
+| Pagos | endpoints transaccionales + `PayCreditCardUseCase` | SDUI no ejecuta dinero |
+
+## Endpoint
+
+- `POST /v1/chat/message` → `ChatMessageResponse` con `uiTree`.
+- Legacy: `/v1/chat/route` (solo intención; deprecar en mobile).
+
+## Catálogo v1 (sync backend ↔ mobile)
+
+`Column`, `AssistantText`, `BalanceCard`, `PayCardPanel`, `SupportChannelsCard`, `InfoBanner`
+
+Nuevo `type` → Composable + test en ambos lados.
+
+## Seguridad
+
+- Props monetarios desde use cases + MongoDB, nunca del clasificador ML.
+- Pagos: tap explícito + `Idempotency-Key`; `requiresConfirmation` en acciones SDUI.
+- Sin PAN/CVV/tokens en props.
+
+## Tests obligatorios al tocar SDUI
+
+- Backend: `application/src/test/.../sdui/` (builders, policy, use case).
+- Mobile: `commonTest/.../sdui/` (mapper, renderer).
+
+Blueprint: `docs/server-driven-ui-blueprint.md`.

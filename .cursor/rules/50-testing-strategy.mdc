@@ -1,0 +1,40 @@
+---
+description: Testing strategy requirements for mobile backend and AI flows
+alwaysApply: true
+---
+
+# Testing Strategy
+
+- Define tests **with** the feature design — not as an afterthought.
+- Full matrix: `docs/testing-matrix.md`.
+
+# By layer
+
+| Layer | Required | Location |
+|-------|----------|----------|
+| Mobile domain | Unit test per use case | `mobile/composeApp/src/commonTest/` |
+| Mobile presentation | Policy + ViewModel tests | `commonTest/.../viewmodel/` |
+| Backend domain | Model invariants | `backend/domain/src/test/` |
+| Backend application | Use case happy + failure (fake ports) | `backend/application/src/test/` |
+| IA local | Benchmark scripts pass | `local/scripts/simulate_*.py` |
+
+# Minimum per transactional feature
+
+- Happy path and at least one failure path.
+- Authorization: unauthenticated access rejected.
+- Idempotency: repeated request with same key does not double-charge.
+- Confirmation: no money movement without explicit user confirm in UI + backend validation.
+
+# AI / chat scenarios
+
+- Intent classification benchmarks on `eval_v1.jsonl`.
+- Multi-turn policy on `dialogue_eval_v1.jsonl`.
+- `unsafe_execution_count == 0` — classifier never triggers payment execution directly.
+
+# Commands
+
+```bash
+cd backend && ./gradlew test
+cd mobile && ./gradlew :composeApp:testDebugUnitTest
+python3 local/scripts/simulate_intent_validation.py
+```

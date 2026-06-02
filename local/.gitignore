@@ -1,0 +1,24 @@
+# Entorno virtual (todo el tooling vive bajo local/)
+venv/
+.venv/
+
+# Caché de Hugging Face / sentence-transformers (pesados)
+.cache/
+models/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Artefactos de entrenamiento
+*.joblib
+*.pkl
+
+# Backups de train_v1 al fusionar (finalize_intent_training.py)
+datasets/intents/.backups/
+
+# Suplemento opcional solo en tu máquina (si no quieres subirlo)
+datasets/intents/train_supplement.jsonl

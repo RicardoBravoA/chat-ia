@@ -1,0 +1,39 @@
+---
+description: Local Python AI tooling, datasets and validation scripts
+globs: local/**/*
+alwaysApply: false
+---
+
+# Local AI Tooling
+
+- All Python, venv, models, and HF cache live under `local/` only.
+- Run scripts from **repo root**: `python3 local/scripts/<script>.py`.
+- Core deps: `local/requirements.txt` (sklearn, Python 3.10–3.14).
+- Embeddings: `requirements-embeddings.txt` requires Python 3.11/3.12 (PyTorch).
+
+## Training pipeline
+
+```
+train_v1 + train_augment + train_supplement + chat_errors (labeled)
+  → train_intent_classifier.py [--eval]
+  → local/models/intent_tfidf_svc.joblib
+```
+
+## Validation = benchmark scripts (not optional for classifier PRs)
+
+- `simulate_intent_validation.py` — `eval_v1.jsonl`
+- `simulate_dialogue_validation.py` — `dialogue_eval_v1.jsonl`
+- Exit code 0 required before merge when datasets or model logic change.
+
+## Rules for scripts
+
+- Pure helpers testable → extract to importable module + `local/tests/` with pytest.
+- Scripts must not execute banking operations or call production APIs without explicit flags.
+- LLM eval (`intent_eval.py`, `learn_until_pass.py`) requires `ANTHROPIC_API_KEY`; results go to `local/reports/`.
+
+## Dataset versioning
+
+- Version in Git: `train_v1.jsonl`, `eval_v1.jsonl`, `chat_errors.jsonl`, `dialogue_eval_v1.jsonl`.
+- Do not auto-modify `eval_v1.jsonl` during training — benchmark is fixed.
+
+See `local/README.md` and `local/datasets/intents/README.md`.

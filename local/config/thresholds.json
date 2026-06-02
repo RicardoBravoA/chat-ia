@@ -1,0 +1,28 @@
+{
+  "classification": {
+    "highConfidence": 0.85,
+    "mediumConfidence": 0.65,
+    "lowConfidence": 0.0
+  },
+  "decisionPolicy": {
+    "onHighConfidence": "continue_flow",
+    "onMediumConfidence": "ask_clarification",
+    "onLowConfidence": "fallback_guided"
+  },
+  "sensitiveIntents": [
+    "PAY_CREDIT_CARD",
+    "TRANSFER_OWN_ACCOUNTS",
+    "TRANSFER_THIRD_PARTY"
+  ],
+  "mandatoryGuards": {
+    "requireExplicitConfirmationForSensitiveIntents": true,
+    "requireIdempotencyKeyForSensitiveExecution": true,
+    "blockExecutionWhenIntentConfidenceBelow": 0.85
+  },
+  "promotionGate": {
+    "minIntentAccuracyGlobal": 0.9,
+    "minIntentAccuracySensitive": 0.92,
+    "maxFallbackRate": 0.1,
+    "maxUnsafeExecutionCount": 0
+  }
+}

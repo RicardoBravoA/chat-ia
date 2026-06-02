@@ -1,0 +1,20 @@
+---
+description: Product context and north star for banking app
+alwaysApply: true
+---
+
+# Product Context
+
+- Build a real banking app for Android and iOS.
+- Mobile stack is Kotlin Multiplatform Mobile with Compose Multiplatform.
+- Backend stack is Kotlin Multiplatform with production-grade APIs.
+- Prioritize security, auditability, and reliability over speed of delivery.
+- Keep all proposals aligned with end-to-end transactional flows.
+
+# Core Features Baseline
+
+- Authentication and secure session management.
+- Balance and account overview.
+- Movements and payment history.
+- Card payment and transfer flows.
+- AI chat assistant for banking operations through backend tools.

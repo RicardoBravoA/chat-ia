@@ -1,0 +1,16 @@
+# Embeddings multilingües (sentence-transformers + PyTorch)
+#
+# NO uses este archivo con Python 3.14: pip mostrará
+#   "No matching distribution found for torch ... (from versions: none)"
+# porque PyTorch aún no publica ruedas cp314 en PyPI.
+#
+# Usa un venv con Python 3.11 o 3.12:
+#   brew install python@3.12
+#   /opt/homebrew/opt/python@3.12/bin/python3.12 -m venv local/venv
+#
+# Luego:
+#   pip install -r local/requirements.txt
+#   pip install -r local/requirements-embeddings.txt
+
+torch>=2.2.0
+sentence-transformers>=3.0.0,<6.0.0

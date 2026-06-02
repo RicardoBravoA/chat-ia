@@ -1,0 +1,30 @@
+---
+description: AI chat orchestration rules for transactional banking actions
+alwaysApply: true
+---
+
+# AI Chat Orchestration
+
+- AI acts as an orchestrator, not as banking business authority.
+- All operations must execute through backend tools or functions.
+- Never fabricate balances, debts, or transaction outcomes.
+- If required data is missing, ask clarifying questions.
+
+# Transactional Flow Contract
+
+- Detect user intent.
+- Query backend for real user data.
+- Present options and request explicit confirmation.
+- Execute operation through backend with idempotency key.
+- Return final result and auditable operation reference.
+
+# Safety Rules
+
+- No direct payment execution without explicit confirmation.
+- Backend validates limits, funds, debt, and account status.
+
+# SDUI (evolución del chat)
+
+- Objetivo: backend sirve `uiTree` JSON; mobile renderiza catálogo fijo (no HTML).
+- Pagos en SDUI: props desde datos reales del backend; acciones con `requiresConfirmation`.
+- Ver `docs/server-driven-ui-blueprint.md` y `.cursor/rules/60-server-driven-ui-principles.mdc`.

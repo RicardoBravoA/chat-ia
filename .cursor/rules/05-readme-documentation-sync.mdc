@@ -1,0 +1,44 @@
+---
+description: Keep README and docs in sync when changing behavior, APIs, or run commands
+alwaysApply: true
+---
+
+# README y documentación — siempre actualizar o validar
+
+En **cada tarea** que cambie comportamiento, APIs, comandos, arquitectura o flujos de usuario, **valida y actualiza** los README afectados antes de dar por terminado el trabajo.
+
+## Cuándo es obligatorio
+
+- Nuevo endpoint, ruta o contrato (request/response).
+- Cambio en cómo ejecutar backend, mobile o `local/`.
+- Nueva feature, flag, variable de entorno o dependencia.
+- Refactor que elimina o renombra comandos, módulos o flujos documentados.
+- SDUI: catálogo de componentes, flujo chat, pagos.
+
+Si solo es un fix interno sin impacto en uso/documentación, indícalo explícitamente en la respuesta ("README: sin cambios necesarios").
+
+## Qué README revisar (mapa)
+
+| Cambio en | README / doc a validar |
+|-----------|-------------------------|
+| Raíz / visión general | `README.md`, `AGENTS.md` |
+| Backend API | `backend/README.md`, `backend/docs/mongodb-setup.md` |
+| Mobile app | `mobile/README.md` |
+| IA local / intents | `local/README.md`, `local/datasets/intents/README.md` |
+| SDUI chat | `docs/server-driven-ui-blueprint.md`, reglas `60-*` / `61-*` / `62-*` |
+| Intenciones / routing | `docs/intent-routing-contract.md` |
+| Tests | `docs/testing-matrix.md` |
+
+## Checklist antes de cerrar la tarea
+
+1. ¿Cambió algo que un desarrollador necesita saber para **correr** o **integrar** el proyecto?
+2. Si sí → actualizar el README del módulo tocado + `README.md` raíz si afecta el quick start.
+3. Comandos en README deben ser **copiables** (rutas desde raíz `ia/` o desde `backend/` / `mobile/` como ya documentan).
+4. No duplicar páginas largas: enlazar a `docs/` o al README del módulo.
+5. En el resumen al usuario, mencionar qué README se actualizó o por qué no hacía falta.
+
+## Definition of Done (documentación)
+
+- [ ] README del área revisado.
+- [ ] `README.md` raíz actualizado si cambia puesta en marcha o enlaces.
+- [ ] Sin comandos obsoletos (`/v1/chat/route` solo como legacy si aplica; chat SDUI → `/v1/chat/message`).

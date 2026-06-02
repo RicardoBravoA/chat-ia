@@ -1,0 +1,34 @@
+---
+description: SDUI mobile renderer — implemented chat catalog and action dispatch
+globs: mobile/**/*
+alwaysApply: false
+---
+
+# SDUI — Renderer mobile (implementado)
+
+## Ubicación
+
+```
+presentation/sdui/
+  SduiRenderer.kt       # type → Composable
+  SduiNodeMapper.kt     # props → PayCardChatAction, flatten Column
+domain/model/sdui/      # UiNode, ChatUiResponse (@Serializable)
+```
+
+## Flujo chat
+
+1. `SendChatMessageUseCase` → `POST /v1/chat/message`
+2. `ChatViewModel` guarda `ChatBubble(sduiRoot = response.uiTree)`
+3. `ChatScreen` → `SduiRenderer` si `sduiRoot != null`
+
+## Reglas
+
+- **No** clasificar intención ni consultar saldo/tarjetas en ViewModel para respuestas del bot.
+- Pagos: `PayCardChatPanel` → `onPayCard` → `PayCreditCardUseCase` + idempotency.
+- Comprobante post-pago: sigue siendo burbuja local (`paymentReceipt`) tras acción exitosa.
+- Tipos desconocidos → `SduiFallback` (no crashear).
+
+## Tests
+
+- `commonTest/.../sdui/SduiNodeMapperTest.kt`
+- Añadir test por cada nuevo `type` del catálogo.

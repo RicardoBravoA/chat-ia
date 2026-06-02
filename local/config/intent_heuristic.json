@@ -1,0 +1,215 @@
+{
+  "version": 3,
+  "description": "Orden: (1) OUT casos que deben ganar a CHECK — fiscal y alta en sucursal; (2) CHECK saldo/estado/cuenta ahorros; (3) OUT resto; (4) PAY…",
+  "amountCaptureRegex": "(\\d+(?:\\.\\d+)?)",
+  "defaultBaselineConfidence": 0.75,
+  "reason": "heuristic-local-config",
+  "rules": [
+    {
+      "intent": "OUT_OF_SCOPE",
+      "confidence": 0.88,
+      "match": {
+        "kind": "anySubstring",
+        "values": [
+          "estado de cuenta fiscal",
+          "solicitud de estado de cuenta fiscal",
+          "para sunat",
+          "abrir cuenta",
+          "en sucursal"
+        ]
+      }
+    },
+    {
+      "intent": "CHECK_BALANCE",
+      "confidence": 0.92,
+      "match": {
+        "kind": "anySubstring",
+        "values": [
+          "saldo",
+          "saldos",
+          "balance",
+          "cuentas",
+          "cuanto cargo en cuenta",
+          "estado de cuenta",
+          "cuenta de ahorros",
+          "cuenta ahorros"
+        ]
+      }
+    },
+    {
+      "intent": "OUT_OF_SCOPE",
+      "confidence": 0.88,
+      "match": {
+        "kind": "anySubstring",
+        "values": [
+          "no reconozco",
+          "no entiendo este cargo",
+          "reclamo por",
+          "reclamo por fraude",
+          "fraude",
+          "hipoteca",
+          "credito hipotecario",
+          "crédito hipotecario",
+          "prestamo hipotecario",
+          "préstamo hipotecario",
+          "prestamo personal",
+          "préstamo personal",
+          "prestamo",
+          "préstamo",
+          "prstamo",
+          "credito personal",
+          "crédito personal",
+          "cancelar mi tarjeta",
+          "cancelar tarjeta",
+          "bloquear tarjeta",
+          "tarjeta extraviada",
+          "tarjeta robada",
+          "tarjeta fisica",
+          "tarjeta física",
+          "reportar tarjeta",
+          "baja de tarjeta",
+          "dar de baja",
+          "asesor humano",
+          "hablar con un asesor",
+          "defensa del consumidor",
+          "quejas y sugerencias",
+          "robo de identidad",
+          "cambio de domicilio",
+          "contratacion de seguro",
+          "contratación de seguro"
+        ]
+      }
+    },
+    {
+      "intent": "PAY_CREDIT_CARD",
+      "confidence": 0.9,
+      "match": {
+        "kind": "anySubstring",
+        "values": [
+          "pagar tc",
+          "paga tc",
+          "pagar tarjeta",
+          "pago tarjeta",
+          "pagar la tarjeta",
+          "pagar mi tarjeta",
+          "pago tc",
+          "paga mi tc",
+          "pagar mi tc",
+          "abonar tarjeta",
+          "abonar tc",
+          "abona mi tc",
+          "abona mi tarjeta",
+          "abonar la tarjeta",
+          "abonar mi tarjeta",
+          "abonar a la visa",
+          "abonar capital tarjeta",
+          "liquidar tarjeta",
+          "liquidar tc",
+          "liquida tarjeta",
+          "liquidar tarjeta de credito",
+          "liquidar tarjeta de crédito",
+          "liquidar corte",
+          "liquidar deuda",
+          "liquidar mensualidad tarjeta",
+          "deuda de tarjeta",
+          "deuda de la tarjeta",
+          "deuda tc",
+          "reducir deuda de la tarjeta",
+          "pago de tarjeta",
+          "pago de tarjeta de credito",
+          "pago de plastico",
+          "pago de plástico",
+          "pago minimo",
+          "pago mínimo",
+          "minimo tarjeta",
+          "mínimo tarjeta",
+          "cubrir el minimo",
+          "cubrir el mínimo",
+          "minimo de la tarjeta",
+          "mínimo de la tarjeta",
+          "tarjeta de credito",
+          "tarjeta de crédito",
+          "pagar tarjeta visa",
+          "pagar el plastico",
+          "pagar el plástico",
+          "pagar linea de credito",
+          "pagar línea de crédito",
+          "pagar intereses",
+          "pagar antes del corte",
+          "pagar deuda de tarjeta",
+          "pagar la deuda del plastico",
+          "pagar tc con nomina",
+          "pagar tc con nómina",
+          "pagar tc desde app",
+          "paga mi tarjeta",
+          "pago a la oro",
+          "pago a la platino",
+          "pago de facturacion tc",
+          "pago inmediato tc",
+          "pago express tarjeta",
+          "pago total tarjeta",
+          "programar pago tarjeta",
+          "domiciliar pago de tarjeta",
+          "hacer pago a tarjeta de credito",
+          "hacer abono a plastico",
+          "saldar la tarjeta",
+          "saldar credito",
+          "bajar saldo de la tc",
+          "reducir saldo no pagado tc",
+          "evitar intereses pagando tarjeta",
+          "registrar pago a tarjeta",
+          "quiero liquidar mi tc",
+          "quiero pagar la tc",
+          "quiero pagar mi tarjeta",
+          "quiero abonar a credito",
+          "quiero abonar a crédito",
+          "ya quiero pagar la tarjeta",
+          "a la tarjeta oro",
+          "a la tarjeta platino",
+          "1500 a la tarjeta",
+          "pago a credito bancario",
+          "pago a crédito bancario",
+          "abonar linea revolving",
+          "liquida la de credito",
+          "liquida la de crédito",
+          "liquidar corte de tarjeta",
+          "pago de tarjeta mode",
+          "pago tarjeta mode"
+        ]
+      },
+      "conditionalEntities": [
+        { "whenSubstring": "oro", "set": { "cardAlias": "oro" } }
+      ]
+    },
+    {
+      "intent": "TRANSFER_OWN_ACCOUNTS",
+      "confidence": 0.9,
+      "match": {
+        "kind": "anyPhrase",
+        "values": [
+          "entre mis cuentas",
+          "de nomina a ahorro",
+          "de principal a ahorro"
+        ]
+      },
+      "conditionalEntities": [
+        { "whenSubstring": "nomina", "set": { "fromAccountAlias": "nomina" } },
+        { "whenSubstring": "principal", "set": { "fromAccountAlias": "principal" } },
+        { "whenSubstring": "ahorro", "set": { "toAccountAlias": "ahorro" } }
+      ]
+    },
+    {
+      "intent": "TRANSFER_THIRD_PARTY",
+      "confidence": 0.88,
+      "match": {
+        "kind": "anyPhrase",
+        "values": ["a maria", "a juan", "a un tercero", "otra persona"]
+      },
+      "conditionalEntities": [
+        { "whenSubstring": "maria lopez", "set": { "beneficiaryName": "maria lopez" } },
+        { "whenSubstring": "maria", "set": { "beneficiaryName": "maria" } },
+        { "whenSubstring": "juan", "set": { "beneficiaryName": "juan" } }
+      ]
+    }
+  ]
+}

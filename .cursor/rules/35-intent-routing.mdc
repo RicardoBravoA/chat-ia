@@ -1,0 +1,41 @@
+---
+description: Intent labels, classifiers, benchmarks and cross-layer routing contract
+globs: "{backend/**/intent/**,local/**,mobile/**/Chat*.kt}"
+alwaysApply: false
+---
+
+# Intent Routing Contract
+
+Canonical doc: `docs/intent-routing-contract.md`.
+
+## Labels (must stay aligned)
+
+`CHECK_BALANCE`, `PAY_CREDIT_CARD`, `TRANSFER_OWN_ACCOUNTS`, `TRANSFER_THIRD_PARTY`, `AMBIGUOUS`, `OUT_OF_SCOPE`
+
+Sync across: `IntentLabel.kt`, JSONL datasets, `intent_heuristic.json`, mobile string comparisons.
+
+## Ownership
+
+| Layer | Owns |
+|-------|------|
+| `local/` + `api/intent/` | Classification (TF-IDF, heuristic, LLM eval) |
+| `BackendRouteResolver` | Intent → API route hints |
+| `ChatRoutingPolicy` (mobile) | Presentation: clarification, out-of-scope card, flow entry |
+
+Do not duplicate classification logic in mobile — consume API response.
+
+## Before merging classifier changes
+
+```bash
+python3 local/scripts/train_intent_classifier.py --eval
+python3 local/scripts/simulate_intent_validation.py
+python3 local/scripts/simulate_dialogue_validation.py
+```
+
+## Unimplemented routes
+
+Transfers return `implemented = false` — UI must not promise success; show unavailable or guide only.
+
+## Threshold changes
+
+Document in `docs/intent-routing-contract.md` and add/update tests in `ChatRoutingPolicyTest` or backend classifier tests.

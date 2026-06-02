@@ -1,0 +1,18 @@
+---
+description: Security, compliance, and audit standards for banking flows
+alwaysApply: true
+---
+
+# Security and Compliance
+
+- Treat this project as a financial application with strict controls.
+- Require strong authN and authZ for sensitive operations.
+- Use explicit user confirmation before money movement operations.
+- Enforce idempotency for payments and transfers.
+- Keep end-to-end traceability with correlation ids and audit logs.
+
+# Operational Rules
+
+- Do not expose sensitive data in logs or error messages.
+- Prefer secure defaults for session, token, and credential handling.
+- Every transactional flow must include failure and rollback strategy.

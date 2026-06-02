@@ -1,0 +1,265 @@
+{"text": "app", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "ayuda", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "banco", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "buenas", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "buenos dias", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "clave", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "como", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "cuenta", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "deposito", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "dinero", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "enviar", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "error", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "espera", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "estoy probando el chat", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "gracias", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "haz una transferencia", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "hola", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "inicio", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "inversion", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "listo", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "me confundi con el menu", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "menu", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "mmm", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "necesito ayuda con una operacion", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "necesito ayuda general", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "nip", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "no entiendo", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "no se", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "no se que pedir", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "ok", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "opciones", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "operacion", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "pagar", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "pago", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "problema", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "que", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "que puedo hacer", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "quiero pagar", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "repite", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "retiro", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "siguiente", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "spei", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "tarjeta", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "tc", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "tengo una duda", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "token", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "transferencia", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "transferir", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "transfiere", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "un momento", "intent": "AMBIGUOUS", "entities": {}}
+{"text": "balance actual", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "balance de hoy", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "balance general de mis productos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "checar saldo", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "consulta mis balances", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "consulta rapida de saldos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "consultar saldo cuenta nomina", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto cargo en cuenta", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto dinero tengo", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto hay disponible hoy", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto hay en la bolsa", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto hay en mi cuenta", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto jalo en nomina", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto me queda", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto puedo gastar", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto tengo en el banco", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto tengo en mis cuentas", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto tengo en nomina", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto tengo en pesos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuanto tengo para retirar", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "cuenta de ahorros", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "dinero disponible", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "disponibilidad de efectivo", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "disponible en cuentas", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "ensename el saldo de todas mis cuentas", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "ensename mi saldo disponible", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "estado de cuenta", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "estado de cuenta resumido", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "estado de mis cuentas", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "hay dinero en mi cuenta corriente", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "home banking saldos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "informacion de saldos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "informe de saldo", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "listado de saldos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "mi dinero a la fecha", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "muestrame cuanto tengo", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "muestrame mis cuentas", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "necesito el saldo actualizado", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "necesito saber si tengo fondos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "necesito ver balances", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "pantalla de inicio saldos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "posicion consolidada", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "quiero saber mis numeros", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "quiero ver mis saldos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "resumen de saldos por favor", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "revisar cuanto hay", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "revisar mi dinero", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "sacar estado de cuenta rapido", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "saldo cuenta ahorro", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "saldo en tiempo real", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "saldos actuales", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "saldos de todas mis cuentas", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "saldos y productos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "ver cuentas y montos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "ver fondos disponibles", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "ver mi lana", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "ver movimientos y saldo", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "ver saldo ahorro y nomina", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "ver saldo de mis cuentas", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "verificacion de fondos", "intent": "CHECK_BALANCE", "entities": {}}
+{"text": "abrir cuenta de ahorros en sucursal", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "bloquear tarjeta por robo", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "cambio de domicilio legal", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "contratacion de seguro de vida", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "dar de baja la plastico", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "defensa del consumidor", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "denunciar operacion sospechosa", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "duplicado de estado de cuenta para sunat", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "hablar con un asesor humano", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "hipoteca", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "me clonaron la tarjeta", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "movimiento que no hice yo", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "necesito constancia fiscal anual", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "necesito hablar de mi hipoteca", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "no entiendo este cargo", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "no reconozco un debito", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "no reconozco un movimiento", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "prestamo", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "prestamo personal", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "prstamo personal", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "quejas y sugerencias", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "quiero cancelar mi tarjeta fisica", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "quiero presentar un reclamo", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "quiero un prestamo personal", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "reclamo por fraude", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "reportar tarjeta extraviada", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "robo de identidad", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "solicito baja de tarjeta", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "solicitud de estado de cuenta fiscal anual", "intent": "OUT_OF_SCOPE", "entities": {}}
+{"text": "1500 a la tarjeta oro", "intent": "PAY_CREDIT_CARD", "entities": {"amount": 1500, "cardAlias": "oro"}}
+{"text": "3000 a tarjeta platino", "intent": "PAY_CREDIT_CARD", "entities": {"amount": 3000, "cardAlias": "platino"}}
+{"text": "800 desde ahorro a la tc oro", "intent": "PAY_CREDIT_CARD", "entities": {"amount": 800, "cardAlias": "oro", "fromAccountAlias": "ahorro"}}
+{"text": "abona mi tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "abonar a la visa", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "abonar capital tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "abonar la tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "abonar linea revolving", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "abonar mi tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "abonar tarjeta de credito", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "abono a credito", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "bajar saldo de la tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "cubrir el minimo de la tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "domiciliar pago de tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "evitar intereses pagando tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "hacer abono a plastico", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "hacer pago a tarjeta de credito", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "liquida la de credito", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "liquida tarjeta de credito", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "liquidar corte de tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "liquidar deuda tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "liquidar mensualidad tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "liquidar tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "me urge pagar la deuda del plastico", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "paga 1500 a la oro", "intent": "PAY_CREDIT_CARD", "entities": {"amount": 1500, "cardAlias": "oro"}}
+{"text": "paga 2000 a mi tarjeta oro", "intent": "PAY_CREDIT_CARD", "entities": {"amount": 2000, "cardAlias": "oro"}}
+{"text": "paga 500 desde nomina a la tc", "intent": "PAY_CREDIT_CARD", "entities": {"amount": 500, "fromAccountAlias": "nomina"}}
+{"text": "paga mi tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "paga mi tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "paga tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar antes del corte", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar deuda de tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar el credito revolvente", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar el plastico", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar intereses y capital tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar la tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar linea de credito", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar mi tarjeta hoy", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar mi tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar tarjeta visa", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pagar tc con nomina", "intent": "PAY_CREDIT_CARD", "entities": {"fromAccountAlias": "nomina"}}
+{"text": "pagar tc desde app", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pago a credito bancario", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pago a la oro", "intent": "PAY_CREDIT_CARD", "entities": {"cardAlias": "oro"}}
+{"text": "pago a la platino", "intent": "PAY_CREDIT_CARD", "entities": {"cardAlias": "platino"}}
+{"text": "pago de facturacion tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pago de plastico oro", "intent": "PAY_CREDIT_CARD", "entities": {"cardAlias": "oro"}}
+{"text": "pago de plastico platino", "intent": "PAY_CREDIT_CARD", "entities": {"cardAlias": "platino"}}
+{"text": "pago de tarjeta de credito", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pago express tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pago inmediato tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pago minimo tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pago tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "pago total tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "programar pago tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "quiero abonar a credito", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "quiero liquidar mi tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "quiero pagar la tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "quiero pagar la tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "quiero pagar mi tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "reducir deuda de la tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "reducir saldo no pagado tc", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "registrar pago a tarjeta oro", "intent": "PAY_CREDIT_CARD", "entities": {"cardAlias": "oro"}}
+{"text": "saldar credito hoy", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "saldar la tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "ya quiero pagar la tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}}
+{"text": "200 de nomina a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 200, "fromAccountAlias": "nomina", "toAccountAlias": "ahorro"}}
+{"text": "50 pesos de principal a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 50, "fromAccountAlias": "principal", "toAccountAlias": "ahorro"}}
+{"text": "dejar todo en nomina", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "envia 700 de mi cuenta uno a mi cuenta dos", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 700}}
+{"text": "enviame fondos entre cuentas", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "enviar entre mis cuentas", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "mandar 9000 de nomina a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 9000, "fromAccountAlias": "nomina", "toAccountAlias": "ahorro"}}
+{"text": "mover 400 de nomina a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 400, "fromAccountAlias": "nomina", "toAccountAlias": "ahorro"}}
+{"text": "mover dinero de nomina a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "mover saldo entre mis productos", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "mueve 2500 de principal a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 2500, "fromAccountAlias": "principal", "toAccountAlias": "ahorro"}}
+{"text": "mueve 300 de principal a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 300, "fromAccountAlias": "principal", "toAccountAlias": "ahorro"}}
+{"text": "no es a terceros es entre mias", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "pasa dinero entre mis cuentas", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "pasame 1500 de ahorro a nomina", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 1500, "fromAccountAlias": "ahorro", "toAccountAlias": "nomina"}}
+{"text": "pasar de principal a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "pasar lana de una cuenta a otra", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "quiero transferir entre cuentas mias", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "quiero transferir entre mis cuentas", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "repartir dinero entre cuentas", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "solo mueve entre mis cuentas", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "transferencia entre cuentas del mismo banco", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "transferencia entre cuentas propias", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "transferencia interna", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "transferir de una cuenta mia a otra", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "transfiere 1000 de nomina a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 1000, "fromAccountAlias": "nomina", "toAccountAlias": "ahorro"}}
+{"text": "traspaso de principal a nomina", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "traspaso interno", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "traspaso nomina ahorro hoy", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "unificar saldo en ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}}
+{"text": "100 para maria lopez", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 100, "beneficiaryName": "maria lopez"}}
+{"text": "5000 a juan", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 5000, "beneficiaryName": "juan"}}
+{"text": "depositale 1200 a maria", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 1200, "beneficiaryName": "maria"}}
+{"text": "depositale 200 a maria", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 200, "beneficiaryName": "maria"}}
+{"text": "deposito a cuenta de maria", "intent": "TRANSFER_THIRD_PARTY", "entities": {"beneficiaryName": "maria"}}
+{"text": "envia 250 a maria lopez por spei", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 250, "beneficiaryName": "maria lopez"}}
+{"text": "envia 3000 a juan", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 3000, "beneficiaryName": "juan"}}
+{"text": "envia 3500 a juan", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 3500, "beneficiaryName": "juan"}}
+{"text": "enviar dinero a maria lopez", "intent": "TRANSFER_THIRD_PARTY", "entities": {"beneficiaryName": "maria lopez"}}
+{"text": "enviar nomina a otra persona", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "envio a tercero registrado", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "envio programado a juan", "intent": "TRANSFER_THIRD_PARTY", "entities": {"beneficiaryName": "juan"}}
+{"text": "haz una transferencia a un tercero", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "mandar dinero al amigo juan", "intent": "TRANSFER_THIRD_PARTY", "entities": {"beneficiaryName": "juan"}}
+{"text": "mandar plata a juan", "intent": "TRANSFER_THIRD_PARTY", "entities": {"beneficiaryName": "juan"}}
+{"text": "pagarle a mi hermana maria", "intent": "TRANSFER_THIRD_PARTY", "entities": {"beneficiaryName": "maria"}}
+{"text": "pago a proveedor", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "pago a tercero", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "pago de servicio a tercero", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "quiero enviarle dinero a otra persona", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "quiero mandar a un beneficiario", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "quiero mandar dinero a un tercero", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "spei a otro banco", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "transferencia a juan perez", "intent": "TRANSFER_THIRD_PARTY", "entities": {"beneficiaryName": "juan perez"}}
+{"text": "transferencia inmediata a maria", "intent": "TRANSFER_THIRD_PARTY", "entities": {"beneficiaryName": "maria"}}
+{"text": "transferencia spei a otra cuenta", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "transferir a cuenta clabe externa", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "transferir a un amigo", "intent": "TRANSFER_THIRD_PARTY", "entities": {}}
+{"text": "transfiere 500 a maria lopez", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 500, "beneficiaryName": "maria lopez"}}

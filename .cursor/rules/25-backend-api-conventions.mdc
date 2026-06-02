@@ -1,0 +1,41 @@
+---
+description: Backend API routes, DTOs, auth and composition root conventions
+globs: backend/**/*.kt
+alwaysApply: false
+---
+
+# Backend API Conventions
+
+## Route layout
+
+- All banking routes under `/v1` in `BankingV1Routes.kt`.
+- Health: `GET /health` in `Application.kt`.
+- Auth: Bearer token via `call.requireBearerToken()` / `requireSession()`.
+
+## DTOs
+
+- Request/response types in `api/dto/ApiDtos.kt` (or split by feature if file grows).
+- Map domain → DTO in `ApiDtoMappers.kt`; never expose internal domain types in JSON.
+
+## Transactional endpoints
+
+- **Payments:** `POST /v1/credit-cards/{cardId}/payments` requires header `Idempotency-Key`.
+- Return auditable refs (`movementId`, amounts) in response DTOs.
+- Map domain errors to HTTP via `BankingStatusPages.kt` — no stack traces to clients.
+
+## Chat routing
+
+- `POST /v1/chat/route` → `RouteChatMessageUseCase` → `IntentClassifierPort` → `BackendRouteResolver`.
+- Response includes `suggestedActions` (method, path, `implemented` flag) — does **not** execute money movement.
+- Classifiers in `api/intent/`; config via `INTENT_ROUTER_MODE`, `REPO_ROOT`, `PYTHON_BIN`.
+
+## Composition root
+
+- All wiring in `BankingCompositionRoot.kt` — single place for repository and use case construction.
+- Do not instantiate Mongo clients or use cases inside route lambdas.
+
+## Tests
+
+- Use case tests with fake ports (see `RouteChatMessageUseCaseTest.kt`).
+- Add `BackendRouteResolverTest` when changing intent → route mapping.
+- Future: Ktor `testApplication` for auth and idempotency header validation.

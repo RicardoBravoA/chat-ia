@@ -1,0 +1,52 @@
+{
+  "userId": "USER-DEMO-001",
+  "currency": "PEN",
+  "accounts": [
+    {
+      "accountId": "ACC-001",
+      "alias": "nomina",
+      "displayName": "Cuenta nomina",
+      "balance": 25000.0,
+      "status": "ACTIVE"
+    },
+    {
+      "accountId": "ACC-002",
+      "alias": "ahorro",
+      "displayName": "Cuenta ahorro",
+      "balance": 8500.0,
+      "status": "ACTIVE"
+    }
+  ],
+  "creditCards": [
+    {
+      "cardId": "CARD-001",
+      "alias": "oro",
+      "displayName": "Tarjeta credito oro",
+      "debt": 4200.0,
+      "status": "ACTIVE"
+    },
+    {
+      "cardId": "CARD-002",
+      "alias": "platino",
+      "displayName": "Tarjeta credito platino",
+      "debt": 0.0,
+      "status": "ACTIVE"
+    }
+  ],
+  "beneficiaries": [
+    {
+      "beneficiaryId": "BEN-001",
+      "name": "Maria Lopez",
+      "status": "VERIFIED"
+    },
+    {
+      "beneficiaryId": "BEN-002",
+      "name": "Juan Perez",
+      "status": "VERIFIED"
+    }
+  ],
+  "limits": {
+    "thirdPartyTransferDaily": 15000.0,
+    "singleTransferMax": 10000.0
+  }
+}

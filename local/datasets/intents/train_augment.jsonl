@@ -1,0 +1,19 @@
+{"text": "quiero ver mis saldos", "intent": "CHECK_BALANCE", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E001"}}
+{"text": "cuanto tengo en mis cuentas", "intent": "CHECK_BALANCE", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E002"}}
+{"text": "ensename el saldo de todas mis cuentas", "intent": "CHECK_BALANCE", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E003"}}
+{"text": "balance actual", "intent": "CHECK_BALANCE", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E004"}}
+{"text": "estado de cuenta", "intent": "CHECK_BALANCE", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E027"}}
+{"text": "cuenta de ahorros", "intent": "CHECK_BALANCE", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E028"}}
+{"text": "quiero pagar la tarjeta", "intent": "PAY_CREDIT_CARD", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E005"}}
+{"text": "abona mi tc", "intent": "PAY_CREDIT_CARD", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E006"}}
+{"text": "paga 1500 a la oro", "intent": "PAY_CREDIT_CARD", "entities": {"amount": 1500, "cardAlias": "oro"}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E007"}}
+{"text": "liquida tarjeta de credito", "intent": "PAY_CREDIT_CARD", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E008"}}
+{"text": "pagar mi tarjeta hoy", "intent": "PAY_CREDIT_CARD", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E025"}}
+{"text": "transfiere 1000 de nomina a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 1000, "fromAccountAlias": "nomina", "toAccountAlias": "ahorro"}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E009"}}
+{"text": "mueve 300 de principal a ahorro", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {"amount": 300, "fromAccountAlias": "principal", "toAccountAlias": "ahorro"}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E010"}}
+{"text": "pasa dinero entre mis cuentas", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E011"}}
+{"text": "quiero transferir entre cuentas mias", "intent": "TRANSFER_OWN_ACCOUNTS", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E012"}}
+{"text": "transfiere 500 a maria lopez", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 500, "beneficiaryName": "maria lopez"}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E013"}}
+{"text": "envia 3500 a juan", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 3500, "beneficiaryName": "juan"}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E014"}}
+{"text": "quiero mandar dinero a un tercero", "intent": "TRANSFER_THIRD_PARTY", "entities": {}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E015"}}
+{"text": "depositale 200 a maria", "intent": "TRANSFER_THIRD_PARTY", "entities": {"amount": 200, "beneficiaryName": "maria"}, "meta": {"source": "learn_until_pass", "kind": "intent_mismatch", "caseId": "E016"}}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.bank.banking.application.usecase.BuildChatUiUseCaseTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-06-02T06:17:38" hostname="MacBook-Pro-de-Ricardo.local" time="0.018">
+  <properties/>
+  <testcase name="OUT_OF_SCOPE high confidence shows support()" classname="com.bank.banking.application.usecase.BuildChatUiUseCaseTest" time="0.009"/>
+  <testcase name="PAY_CREDIT_CARD builds pay card panels()" classname="com.bank.banking.application.usecase.BuildChatUiUseCaseTest" time="0.002"/>
+  <testcase name="CHECK_BALANCE builds balance card()" classname="com.bank.banking.application.usecase.BuildChatUiUseCaseTest" time="0.002"/>
+  <testcase name="OUT_OF_SCOPE low confidence rechecks out of scope by showing clarification()" classname="com.bank.banking.application.usecase.BuildChatUiUseCaseTest" time="0.002"/>
+  <testcase name="AMBIGUOUS asks clarification()" classname="com.bank.banking.application.usecase.BuildChatUiUseCaseTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

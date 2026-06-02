@@ -1,0 +1,45 @@
+---
+description: Mobile package layout and when to add use cases vs repositories
+globs: mobile/**/*.kt
+alwaysApply: false
+---
+
+# Mobile Package Conventions
+
+## When to add what
+
+| Need | Add to | Not to |
+|------|--------|--------|
+| Business rule or orchestration | `domain/usecase/NewUseCase.kt` | ViewModel, Composable, Repository impl |
+| API call or persistence | `data/repository` method + port in `domain/repository` | ViewModel directly calling Ktor |
+| UI state + user events | `presentation/viewmodel` + `*UiState` data class | Use case |
+| Pure UI decision (thresholds, copy) | `presentation/viewmodel` policy object | Domain layer |
+| Screen layout | `presentation/screen` or `presentation/ui/organisms` | ViewModel |
+
+## Naming
+
+- Use cases: verb phrase — `GetBalanceUseCase`, `PayCreditCardUseCase`.
+- ViewModels: feature + `ViewModel` — `ChatViewModel`; state: `ChatUiState`.
+- Repositories: `Remote*Repository` for network; interface without prefix in domain.
+- Screens: `*Screen.kt`; navigation routes in `BankNavRoutes`.
+
+## ViewModel pattern
+
+```kotlin
+class ExampleViewModel(private val useCase: ExampleUseCase) {
+    private val _state = MutableStateFlow(ExampleUiState())
+    val state: StateFlow<ExampleUiState> = _state.asStateFlow()
+
+    fun onAction() { /* update _state, launch use case */ }
+    fun clear() { /* cancel scope */ }
+}
+```
+
+## Idempotency
+
+- Generate keys with `newBankingIdempotencyKey()` from `BankingNetworkHelpers.kt`.
+- Send `Idempotency-Key` header on `POST .../payments`; never reuse keys across distinct user actions.
+
+## Backend URL
+
+- Use `backendBaseUrl()` expect/actual — Android emulator: `10.0.2.2:8080`; iOS: `localhost:8080`.

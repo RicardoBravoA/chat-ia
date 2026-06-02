@@ -1,0 +1,33 @@
+---
+description: Mobile architecture standards for KMM app
+alwaysApply: true
+---
+
+# Mobile Architecture
+
+- **Single Gradle module** `:composeApp` with **package-layer** Clean Architecture (not multi-module yet).
+- Root package: `com.bank.mobile` — layers: `domain`, `data`, `presentation`.
+- Use Compose Multiplatform with **ViewModel + StateFlow + *UiState** (imperative handlers, not full MVI events).
+- Business rules live in `domain/usecase`; UI in `presentation/screen` and `presentation/ui/*`.
+- Repository **interfaces** in `domain/repository`; Ktor implementations in `data/repository`.
+- Wire dependencies manually in `BankingApp.kt` (composition root); do not inject from Composables.
+- Platform-specific code only via `expect/actual` (`PlatformConfig`, external URLs, gallery).
+
+# Package map
+
+| Layer | Package | Examples |
+|-------|---------|----------|
+| Domain | `domain.model`, `domain.repository`, `domain.usecase` | `LoginUseCase`, `PayCreditCardUseCase` |
+| Data | `data.remote`, `data.repository`, `data.mapper` | `RemoteHomeRepository`, DTO mappers |
+| Presentation | `presentation.viewmodel`, `presentation.screen`, `presentation.navigation` | `ChatViewModel`, `BankingNavHost` |
+| UI atoms | `presentation.ui.atoms\|molecules\|organisms` | Reusable Compose components |
+
+# Mobile Quality Gates
+
+- Unit tests in `composeApp/src/commonTest/` for every new use case and presentation policy.
+- Chat: **SDUI** — `POST /v1/chat/message` → `SduiRenderer`; no armar UI por `intent` en ViewModel.
+- ViewModel tests for transactional flows (login, balance, pay card).
+- Critical journeys: Compose UI tests in `androidTest` when added.
+- Chat presentation policy: `ChatRoutingPolicy` — backend owns classification; mobile owns UI decisions only.
+
+See `docs/testing-matrix.md` and `.cursor/rules/15-mobile-package-conventions.mdc`.

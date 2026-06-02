@@ -1,0 +1,30 @@
+{"text":"quiero ver mi saldo de hoy","intent":"CHECK_BALANCE","entities":{}}
+{"text":"me dices cuanto dinero tengo en mi cuenta","intent":"CHECK_BALANCE","entities":{}}
+{"text":"consulta de saldo por favor","intent":"CHECK_BALANCE","entities":{}}
+{"text":"muestrame cuanto tengo en ahorros","intent":"CHECK_BALANCE","entities":{}}
+{"text":"quiero revisar mi balance actual","intent":"CHECK_BALANCE","entities":{}}
+{"text":"quiero pagar mi tarjeta de credito","intent":"PAY_CREDIT_CARD","entities":{}}
+{"text":"ayudame a pagar la tc","intent":"PAY_CREDIT_CARD","entities":{}}
+{"text":"cuanto debo de mi tarjeta","intent":"PAY_CREDIT_CARD","entities":{}}
+{"text":"quiero pagar la visa oro","intent":"PAY_CREDIT_CARD","entities":{}}
+{"text":"quiero cancelar deuda de tarjeta","intent":"PAY_CREDIT_CARD","entities":{}}
+{"text":"quiero transferir entre mis cuentas","intent":"TRANSFER_OWN_ACCOUNTS","entities":{}}
+{"text":"pasar dinero de mi ahorro a corriente","intent":"TRANSFER_OWN_ACCOUNTS","entities":{}}
+{"text":"mover plata a mi otra cuenta","intent":"TRANSFER_OWN_ACCOUNTS","entities":{}}
+{"text":"transferirme dinero a mi cuenta sueldo","intent":"TRANSFER_OWN_ACCOUNTS","entities":{}}
+{"text":"quiero enviar a mi segunda cuenta","intent":"TRANSFER_OWN_ACCOUNTS","entities":{}}
+{"text":"quiero transferir a otra persona","intent":"TRANSFER_THIRD_PARTY","entities":{}}
+{"text":"enviar dinero a un tercero","intent":"TRANSFER_THIRD_PARTY","entities":{}}
+{"text":"haz una transferencia a juan perez","intent":"TRANSFER_THIRD_PARTY","entities":{}}
+{"text":"quiero pasarle plata a mi hermano","intent":"TRANSFER_THIRD_PARTY","entities":{}}
+{"text":"transferencia interbancaria a tercero","intent":"TRANSFER_THIRD_PARTY","entities":{}}
+{"text":"necesito un prestamo personal","intent":"OUT_OF_SCOPE","entities":{}}
+{"text":"quiero refinanciar una deuda","intent":"OUT_OF_SCOPE","entities":{}}
+{"text":"pagar recibo de luz desde app","intent":"OUT_OF_SCOPE","entities":{}}
+{"text":"quiero hablar con soporte humano","intent":"OUT_OF_SCOPE","entities":{}}
+{"text":"estado de cuenta para sunat","intent":"OUT_OF_SCOPE","entities":{}}
+{"text":"hazlo rapido","intent":"AMBIGUOUS","entities":{}}
+{"text":"quiero hacer una operacion","intent":"AMBIGUOUS","entities":{}}
+{"text":"necesito ayuda con algo","intent":"AMBIGUOUS","entities":{}}
+{"text":"quiero mover dinero","intent":"AMBIGUOUS","entities":{}}
+{"text":"quiero que me ayudes","intent":"AMBIGUOUS","entities":{}}

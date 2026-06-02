@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.bank.banking.application.sdui.NotImplementedTransferUiBuilderTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-06-02T06:17:38" hostname="MacBook-Pro-de-Ricardo.local" time="0.006">
+  <properties/>
+  <testcase name="TRANSFER_THIRD_PARTY shows banner for third party transfers()" classname="com.bank.banking.application.sdui.NotImplementedTransferUiBuilderTest" time="0.004"/>
+  <testcase name="TRANSFER_OWN_ACCOUNTS shows banner for own transfers()" classname="com.bank.banking.application.sdui.NotImplementedTransferUiBuilderTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

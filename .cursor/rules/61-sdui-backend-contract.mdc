@@ -1,0 +1,64 @@
+---
+description: SDUI JSON contract and backend UI tree builder conventions
+globs: backend/**/*
+alwaysApply: false
+---
+
+# SDUI — Contrato backend
+
+## Endpoint objetivo
+
+`POST /v1/chat/message` (evolución de `/v1/chat/route`) devuelve:
+
+```json
+{
+  "schemaVersion": 1,
+  "correlationId": "uuid",
+  "uiTree": { "type": "Column", "children": [...] },
+  "metadata": { "intent": "PAY_CREDIT_CARD", "confidence": 0.91 }
+}
+```
+
+Mantener `/v1/chat/route` durante migración (strangler fig).
+
+## Modelo de nodo (domain → DTO)
+
+```kotlin
+data class UiNode(
+    val id: String,
+    val type: String,           // clave del catálogo
+    val props: Map<String, JsonElement> = emptyMap(),
+    val children: List<UiNode> = emptyList(),
+    val actions: List<UiAction> = emptyList(),
+)
+
+data class UiAction(
+    val id: String,
+    val label: String,
+    val actionType: String,     // PAY_CARD, OPEN_URL, DISMISS, ...
+    val payload: Map<String, JsonElement> = emptyMap(),
+    val requiresConfirmation: Boolean = false,
+)
+```
+
+- Definir tipos en `domain/model/sdui/`; serializar en `api/dto/SduiDtos.kt`.
+- Construir árboles en `application/sdui/` (builders por flujo), no en rutas Ktor.
+
+## Builders por flujo (mapear componentes actuales)
+
+| Flujo | Nodos backend | Datos desde |
+|-------|---------------|-------------|
+| Saldo | `AssistantText`, `BalanceCard` | `GetCurrentBalanceUseCase` |
+| Pago TC | `AssistantText`, `PayCardPanel` × N | `ListCreditCardsWithDebtUseCase` |
+| Clarificación | `AssistantText` | clasificador |
+| Soporte | `SupportChannelsCard` | estático / config |
+| Comprobante | `PaymentReceiptCard` | resultado de pago |
+
+## Reglas de implementación
+
+- El builder **consulta backend real** antes de emitir props (deuda, saldo, titular).
+- `implemented = false` → nodo `AssistantText` + `InfoBanner`, no `PayCardPanel`.
+- Validar props en builder (montos ≥ 0, ids existentes); fallo → nodo `ErrorBanner`.
+- Tests: builder unit tests con ports fake; snapshot JSON del árbol por escenario.
+
+Ver catálogo completo: `docs/server-driven-ui-blueprint.md`.

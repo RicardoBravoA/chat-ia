@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "version": "finalize-local-i1",
+    "date": "2026-04-18",
+    "datasetVersion": "eval_v1",
+    "operator": "local-user",
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-6",
+    "fewShot": {
+      "baseCount": 265,
+      "augmentCount": 19,
+      "dedupedTotal": 265,
+      "enabled": true,
+      "basePath": "/Users/ricardobravo/Documents/code/ia/local/datasets/intents/train_v1.jsonl",
+      "augmentPath": "/Users/ricardobravo/Documents/code/ia/local/datasets/intents/train_augment.jsonl"
+    }
+  },
+  "summary": {
+    "totalCases": 30,
+    "intentAccuracyGlobal": 0.9667,
+    "intentAccuracySensitive": 1.0,
+    "entityExtractionAccuracy": 1.0,
+    "fallbackRate": 0.0,
+    "rawFallbackRate": 0.3333,
+    "spuriousFallbackCount": 0,
+    "rawFallbackCount": 10,
+    "clarificationRate": 0.2667,
+    "unsafeExecutionCount": 0
+  },
+  "byFlow": {
+    "CHECK_BALANCE": {
+      "accuracy": 1.0,
+      "errors": [],
+      "entityErrors": []
+    },
+    "PAY_CREDIT_CARD": {
+      "accuracy": 1.0,
+      "confirmationRequiredRespected": true,
+      "errors": [],
+      "entityErrors": []
+    },
+    "TRANSFER_OWN_ACCOUNTS": {
+      "accuracy": 1.0,
+      "confirmationRequiredRespected": true,
+      "errors": [],
+      "entityErrors": []
+    },
+    "TRANSFER_THIRD_PARTY": {
+      "accuracy": 1.0,
+      "confirmationRequiredRespected": true,
+      "errors": [],
+      "entityErrors": []
+    }
+  },
+  "criticalIncidents": [],
+  "promotionGate": {
+    "thresholdsRef": "local/config/thresholds.json",
+    "failures": []
+  },
+  "promotionDecision": {
+    "result": "APROBADO",
+    "reason": "Cumple todos los umbrales del promotion gate."
+  }
+}

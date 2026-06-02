@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.bank.banking.application.sdui.ChatPresentationPolicyTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-06-02T06:17:38" hostname="MacBook-Pro-de-Ricardo.local" time="0.005">
+  <properties/>
+  <testcase name="ambiguous intent asks clarification()" classname="com.bank.banking.application.sdui.ChatPresentationPolicyTest" time="0.002"/>
+  <testcase name="high confidence check balance proceeds()" classname="com.bank.banking.application.sdui.ChatPresentationPolicyTest" time="0.001"/>
+  <testcase name="low confidence asks clarification()" classname="com.bank.banking.application.sdui.ChatPresentationPolicyTest" time="0.0"/>
+  <testcase name="out of scope high confidence shows support()" classname="com.bank.banking.application.sdui.ChatPresentationPolicyTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
