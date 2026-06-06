@@ -1,5 +1,0 @@
-version,date,dataset_version,intent_accuracy_global,intent_accuracy_sensitive,entity_extraction_accuracy,fallback_rate,clarification_rate,unsafe_execution_count,promotion_result,notes
-finalize-local-i1,2026-04-18,eval_v1,0.1000,0.0000,0.0000,0.6333,1.0000,0,RECHAZADO,provider=anthropic;few_shot=True
-finalize-local-i2,2026-04-18,eval_v1,0.1000,0.0000,0.0000,0.6333,1.0000,0,RECHAZADO,provider=anthropic;few_shot=True
-finalize-local-i1,2026-04-18,eval_v1,0.1000,0.0000,0.0000,0.6333,1.0000,0,RECHAZADO,provider=anthropic;few_shot=True
-finalize-local-i1,2026-04-18,eval_v1,0.9667,1.0000,1.0000,0.0000,0.2667,0,APROBADO,provider=anthropic;few_shot=True

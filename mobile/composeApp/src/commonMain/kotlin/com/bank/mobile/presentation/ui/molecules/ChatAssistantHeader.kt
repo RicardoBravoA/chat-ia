@@ -31,6 +31,7 @@ fun ChatAssistantHeader(
 ) {
     Row(
         modifier = modifier
+
             .fillMaxWidth()
             .background(AppPalette.ChatHeaderBar)
             .padding(horizontal = 12.dp, vertical = 10.dp),

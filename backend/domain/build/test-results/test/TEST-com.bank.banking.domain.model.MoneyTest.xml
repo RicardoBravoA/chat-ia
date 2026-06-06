@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.bank.banking.domain.model.MoneyTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-06-02T05:36:08" hostname="MacBook-Pro-de-Ricardo.local" time="0.05">
-  <properties/>
-  <testcase name="rejects negative minor units()" classname="com.bank.banking.domain.model.MoneyTest" time="0.034"/>
-  <testcase name="minus same currency()" classname="com.bank.banking.domain.model.MoneyTest" time="0.014"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

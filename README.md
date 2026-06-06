@@ -63,6 +63,8 @@ Las tres partes son independientes. Para el flujo completo (móvil → backend �
 
 ## Documentación
 
+- [`docs/presentacion-negocio-chat-ia.md`](docs/presentacion-negocio-chat-ia.md) — presentación orientada a negocio (chat IA, SDUI, modelo local).
+- [`docs/presentacion-dev-chat-ia.md`](docs/presentacion-dev-chat-ia.md) — presentación para devs (entrenamiento nube/local, backend, SDUI).
 - [`docs/ai-chat-backend-blueprint.md`](docs/ai-chat-backend-blueprint.md) — diseño del chat IA sobre el backend.
 - [`docs/local-state-validation-runbook.md`](docs/local-state-validation-runbook.md) — validación local de estados conversacionales.
 - [`backend/docs/mongodb-setup.md`](backend/docs/mongodb-setup.md) — instalación y esquema de MongoDB.
