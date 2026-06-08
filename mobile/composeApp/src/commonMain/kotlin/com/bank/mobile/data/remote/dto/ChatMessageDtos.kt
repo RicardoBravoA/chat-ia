@@ -3,7 +3,11 @@ package com.bank.mobile.data.remote.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ChatMessageRequestDto(val message: String)
+data class ChatMessageRequestDto(
+    val message: String,
+    val sessionId: String? = null,
+    val selectedIntent: String? = null,
+)
 
 @Serializable
 data class UiActionDto(
@@ -36,6 +40,7 @@ data class UiMetadataDto(
 data class ChatMessageResponseDto(
     val schemaVersion: Int,
     val correlationId: String,
+    val sessionId: String,
     val userMessage: String,
     val uiTree: UiNodeDto,
     val metadata: UiMetadataDto,

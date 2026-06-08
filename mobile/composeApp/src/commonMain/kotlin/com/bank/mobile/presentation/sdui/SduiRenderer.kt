@@ -23,7 +23,10 @@ import com.bank.mobile.presentation.support.SupportContactDefaults
 import com.bank.mobile.presentation.ui.atoms.AppPalette
 import com.bank.mobile.presentation.ui.molecules.AssistantMessageBubble
 import com.bank.mobile.presentation.ui.molecules.ChatBalanceMiniCard
+import com.bank.mobile.presentation.ui.molecules.ChatGreetingCard
+import com.bank.mobile.presentation.ui.molecules.ChatHistoryRowCard
 import com.bank.mobile.presentation.ui.molecules.OutOfScopeSupportCard
+import com.bank.mobile.presentation.ui.molecules.SpendingCategoryRowCard
 import com.bank.mobile.presentation.ui.organisms.PayCardChatPanel
 
 @Composable
@@ -33,6 +36,7 @@ fun SduiRenderer(
     payingCardId: String?,
     paidCardIds: Set<String> = emptySet(),
     onPayCard: (PayCardChatAction, CreditCardPaymentMode, Double?, sduiMessageKey: Long) -> Unit,
+    onQuickReply: (label: String, selectedIntent: String) -> Unit = { _, _ -> },
     sduiMessageKey: Long = 0L,
     modifier: Modifier = Modifier,
 ) {
@@ -47,6 +51,7 @@ fun SduiRenderer(
                         paidCardIds = paidCardIds,
                         sduiMessageKey = sduiMessageKey,
                         onPayCard = onPayCard,
+                        onQuickReply = onQuickReply,
                     )
                 Spacer(Modifier.height(8.dp))
                 }
@@ -99,6 +104,31 @@ fun SduiRenderer(
                     color = AppPalette.ChatTextPrimary,
                 )
             }
+        }
+        UiComponentType.GREETING_CARD -> {
+            ChatGreetingCard(
+                message = node.propText("message"),
+                quickReplies = node.actions.filter { it.actionType == "QUICK_REPLY" },
+                timeLabel = formatTimeLabel(timestampEpochMs),
+                enabled = payingCardId == null,
+                onQuickReply = onQuickReply,
+            )
+        }
+        UiComponentType.CHAT_HISTORY_ROW -> {
+            ChatHistoryRowCard(
+                sessionLabel = node.propText("sessionLabel"),
+                lastMessage = node.propText("lastMessage"),
+                turnCount = node.propInt("turnCount") ?: 0,
+                timeLabel = node.propText("timeLabel"),
+                lastIntent = node.propText("lastIntent"),
+            )
+        }
+        UiComponentType.SPENDING_CATEGORY_ROW -> {
+            SpendingCategoryRowCard(
+                category = node.propText("category"),
+                transactionCount = node.propInt("transactionCount") ?: 0,
+                totalAmountFormatted = node.propText("totalAmountFormatted"),
+            )
         }
         else -> SduiFallback(node.type)
     }

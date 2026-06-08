@@ -1,15 +1,21 @@
 package com.bank.banking.api
 
+import com.bank.banking.api.dto.ChatHistoryItemDto
+import com.bank.banking.api.dto.ChatHistoryResponse
 import com.bank.banking.api.dto.ChatRouteResponse
 import com.bank.banking.api.dto.CreditCardWithDebtItem
+import com.bank.banking.api.dto.ExpenseCategorySummaryDto
+import com.bank.banking.api.dto.MonthlyExpensesResponse
 import com.bank.banking.api.dto.MovementItem
 import com.bank.banking.api.dto.PaymentItem
 import com.bank.banking.api.dto.SuggestedBackendActionDto
 import com.bank.banking.application.usecase.ChatRouteResult
 import com.bank.banking.domain.model.BackendRouteHint
 import com.bank.banking.domain.model.CardPayment
+import com.bank.banking.domain.model.ChatHistoryEntry
 import com.bank.banking.domain.model.CreditCard
 import com.bank.banking.domain.model.CreditCardMovement
+import com.bank.banking.domain.model.MonthlyExpenseReport
 
 internal fun CreditCard.toCreditCardWithDebtItem(): CreditCardWithDebtItem =
     CreditCardWithDebtItem(
@@ -56,6 +62,35 @@ internal fun BackendRouteHint.toDto(): SuggestedBackendActionDto =
         requiresIdempotencyKey = requiresIdempotencyKey,
         implemented = implemented,
         description = description,
+    )
+
+internal fun ChatHistoryEntry.toDto(): ChatHistoryItemDto =
+    ChatHistoryItemDto(
+        sessionId = sessionId,
+        turnCount = turnCount,
+        lastUserMessage = lastUserMessage,
+        lastIntent = lastIntent,
+        updatedAtEpochMs = updatedAtEpochMs,
+    )
+
+internal fun List<ChatHistoryEntry>.toChatHistoryResponse(): ChatHistoryResponse =
+    ChatHistoryResponse(sessions = map { it.toDto() })
+
+internal fun MonthlyExpenseReport.toMonthlyExpensesResponse(): MonthlyExpensesResponse =
+    MonthlyExpensesResponse(
+        yearMonth = yearMonth,
+        categories = categories.map {
+            ExpenseCategorySummaryDto(
+                categoryId = it.categoryId,
+                category = it.categoryLabel,
+                transactionCount = it.transactionCount,
+                totalAmount = it.totalAmount,
+                currency = it.currency,
+            )
+        },
+        totalTransactionCount = totalTransactionCount,
+        grandTotal = grandTotal,
+        currency = currency,
     )
 
 internal fun ChatRouteResult.toResponse(): ChatRouteResponse {

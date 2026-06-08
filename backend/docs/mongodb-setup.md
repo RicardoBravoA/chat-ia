@@ -62,6 +62,9 @@ No necesitas crearlas a mano: el **primer insert** o el **bootstrap** las crean.
 | `accounts` | Cuenta por usuario: `amount`, `currency`, `userId`. |
 | `credit_cards` | Tarjetas: **`debt`** (deuda total), **`creditLine`** (línea de crédito máx.), **`currency`**, `userId`, `alias`, `lastFourDigits`. |
 | `card_movements` | Movimientos: `cardId`, `kind`, **`amount`** (importe del movimiento), `currency`, `description`, `occurredAt`. |
+| `chat_sessions` | Historial IA: `userId`, `turns[]` (mensaje, intent, confidence, entities), `updatedAtEpochMs`. |
+| `expense_categories` | Catálogo: `_id`, `code`, `label`. |
+| `categorized_expenses` | Gastos por transacción: `userId`, `categoryId`, `amount`, `currency`, `description`, `occurredAt`. |
 
 Los importes van en **unidades mínimas** (p. ej. centavos); `debt` ≤ `creditLine` en datos consistentes.
 
@@ -116,7 +119,7 @@ No hace falta ejecutar scripts SQL ni crear “tablas” vacías antes de levant
 
 Si **`users`** está vacía al arrancar, se inserta:
 
-- Usuario: **`demo@bank.com`** / **`Demo1234!`**
+- Usuario: **`woz@bank.com`** / **`Demo1234!`**
 - Cuenta, tarjeta `card_demo_1` y un movimiento de ejemplo.
 
 Si ya hay al menos un usuario, el seed de demo **no** se ejecuta (solo se aseguran los índices).

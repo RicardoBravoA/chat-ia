@@ -6,6 +6,11 @@ import com.bank.mobile.domain.repository.HomeRepository
 class SendChatMessageUseCase(
     private val homeRepository: HomeRepository,
 ) {
-    suspend operator fun invoke(token: String, message: String): ChatUiResponse =
-        homeRepository.sendChatMessage(token, message)
+    suspend operator fun invoke(
+        token: String,
+        message: String,
+        sessionId: String?,
+        selectedIntent: String? = null,
+    ): ChatUiResponse =
+        homeRepository.sendChatMessage(token, message, sessionId, selectedIntent)
 }

@@ -10,27 +10,29 @@ Canonical doc: `docs/intent-routing-contract.md`.
 
 ## Labels (must stay aligned)
 
-`CHECK_BALANCE`, `PAY_CREDIT_CARD`, `TRANSFER_OWN_ACCOUNTS`, `TRANSFER_THIRD_PARTY`, `AMBIGUOUS`, `OUT_OF_SCOPE`
+`CHECK_BALANCE`, `PAY_CREDIT_CARD`, `TRANSFER_OWN_ACCOUNTS`, `TRANSFER_THIRD_PARTY`, `VIEW_CHAT_HISTORY`, `MONTHLY_EXPENSES`, `AMBIGUOUS`, `OUT_OF_SCOPE`
 
-Sync across: `IntentLabel.kt`, JSONL datasets, `intent_heuristic.json`, mobile string comparisons.
+Sync across: `IntentLabel.kt`, JSONL datasets, `intent_heuristic.json`.
 
 ## Ownership
 
 | Layer | Owns |
 |-------|------|
-| `local/` + `api/intent/` | Classification (TF-IDF, heuristic, LLM eval) |
+| `api/intent/` (Woz + heuristic) | Classification |
+| `local/scripts/woz_client.py` | Ollama client for benchmarks |
 | `BackendRouteResolver` | Intent → API route hints |
-| `ChatRoutingPolicy` (mobile) | Presentation: clarification, out-of-scope card, flow entry |
+| `ChatPresentationPolicy` (backend SDUI) | Clarification, out-of-scope, support UI |
 
-Do not duplicate classification logic in mobile — consume API response.
+Do not duplicate classification logic in mobile — consume API/SDUI metadata.
 
 ## Before merging classifier changes
 
 ```bash
-python3 local/scripts/train_intent_classifier.py --eval
 python3 local/scripts/simulate_intent_validation.py
 python3 local/scripts/simulate_dialogue_validation.py
 ```
+
+(Ollama must be running.)
 
 ## Unimplemented routes
 
@@ -38,4 +40,4 @@ Transfers return `implemented = false` — UI must not promise success; show una
 
 ## Threshold changes
 
-Document in `docs/intent-routing-contract.md` and add/update tests in `ChatRoutingPolicyTest` or backend classifier tests.
+Document in `docs/intent-routing-contract.md` and add/update tests in `ChatPresentationPolicyTest` or `WozResponseParserTest`.

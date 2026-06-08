@@ -8,4 +8,7 @@ object UiComponentType {
     const val PAY_CARD_PANEL = "PayCardPanel"
     const val SUPPORT_CHANNELS_CARD = "SupportChannelsCard"
     const val INFO_BANNER = "InfoBanner"
+    const val GREETING_CARD = "GreetingCard"
+    const val CHAT_HISTORY_ROW = "ChatHistoryRow"
+    const val SPENDING_CATEGORY_ROW = "SpendingCategoryRow"
 }

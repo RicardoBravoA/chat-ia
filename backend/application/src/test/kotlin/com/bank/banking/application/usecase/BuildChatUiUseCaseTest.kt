@@ -1,23 +1,32 @@
 package com.bank.banking.application.usecase
 
 import com.bank.banking.application.sdui.BalanceUiBuilder
+import com.bank.banking.application.sdui.ChatHistoryUiBuilder
 import com.bank.banking.application.sdui.ChatUiBuilderFactory
 import com.bank.banking.application.sdui.ClarificationUiBuilder
+import com.bank.banking.application.sdui.GreetingUiBuilder
+import com.bank.banking.application.sdui.MonthlyExpensesUiBuilder
 import com.bank.banking.application.sdui.PayCreditCardUiBuilder
 import com.bank.banking.application.sdui.SupportUiBuilder
 import com.bank.banking.application.sdui.NotImplementedTransferUiBuilder
+import com.bank.banking.domain.model.MonthlyExpenseReport
+import com.bank.banking.domain.port.ExpenseRepository
 import com.bank.banking.application.usecase.ListCreditCardsWithDebtUseCase
 import com.bank.banking.domain.model.IntentClassification
 import com.bank.banking.domain.model.IntentLabel
 import com.bank.banking.domain.model.Money
 import com.bank.banking.domain.model.SessionToken
 import com.bank.banking.domain.model.UserId
-import com.bank.banking.domain.model.CreditCard
-import com.bank.banking.domain.model.CreditCardId
 import com.bank.banking.domain.model.Account
 import com.bank.banking.domain.model.AccountId
+import com.bank.banking.domain.model.ChatSession
+import com.bank.banking.domain.model.ChatSessionId
+import com.bank.banking.domain.model.ChatTurn
+import com.bank.banking.domain.model.CreditCard
+import com.bank.banking.domain.model.CreditCardId
 import com.bank.banking.domain.model.sdui.UiComponentType
 import com.bank.banking.domain.port.AccountRepository
+import com.bank.banking.domain.port.ChatSessionRepository
 import com.bank.banking.domain.port.CreditCardRepository
 import com.bank.banking.domain.port.SessionRepository
 import com.bank.banking.domain.port.SessionRecord
@@ -25,8 +34,49 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.util.concurrent.ConcurrentHashMap
 
 class BuildChatUiUseCaseTest {
+
+    @Test
+    fun `quick reply selectedIntent skips classifier and builds target ui`() = runBlocking {
+        val token = SessionToken("tok")
+        val ctx = TestChatContext(
+            classification = classification(
+                intent = IntentLabel.AMBIGUOUS,
+                confidence = 0.1,
+                clarificationNeeded = true,
+            ),
+        )
+
+        val response = ctx.useCase.execute(
+            token = token,
+            message = "Ver saldo",
+            sessionId = null,
+            selectedIntent = "CHECK_BALANCE",
+        )
+
+        assertTrue(response.uiTree.children.any { it.type == UiComponentType.BALANCE_CARD })
+        assertEquals("quick_reply", response.metadata.routerSource)
+        assertEquals("CHECK_BALANCE", response.metadata.intent)
+    }
+
+    @Test
+    fun `greeting message shows greeting card instead of clarification`() = runBlocking {
+        val token = SessionToken("tok")
+        val ctx = TestChatContext(
+            classification = classification(
+                intent = IntentLabel.AMBIGUOUS,
+                confidence = 0.3,
+                clarificationNeeded = true,
+            ),
+        )
+
+        val tree = ctx.useCase.execute(token, "hola").uiTree
+
+        assertEquals(UiComponentType.COLUMN, tree.type)
+        assertEquals(UiComponentType.GREETING_CARD, tree.children.single().type)
+    }
 
     @Test
     fun `AMBIGUOUS asks clarification`() = runBlocking {
@@ -39,7 +89,7 @@ class BuildChatUiUseCaseTest {
             ),
         )
 
-        val tree = ctx.useCase.execute(token, "hola").uiTree
+        val tree = ctx.useCase.execute(token, "no se que necesito exactamente").uiTree
 
         assertEquals(UiComponentType.COLUMN, tree.type)
         assertTrue(tree.children.any { it.type == UiComponentType.ASSISTANT_TEXT })
@@ -76,7 +126,7 @@ class BuildChatUiUseCaseTest {
             ),
         )
 
-        val tree = ctx.useCase.execute(token, "hola clima").uiTree
+        val tree = ctx.useCase.execute(token, "clima hoy").uiTree
 
         assertEquals(UiComponentType.COLUMN, tree.type)
         assertTrue(tree.children.any { it.type == UiComponentType.SUPPORT_CHANNELS_CARD })
@@ -143,8 +193,11 @@ class BuildChatUiUseCaseTest {
         classification: IntentClassification,
     ) {
         // RouteChatMessageUseCase depends on an IntentClassifierPort; we stub classify() directly.
-        private val intentClassifier = com.bank.banking.domain.port.IntentClassifierPort {
-            classification
+        private val intentClassifier = object : com.bank.banking.domain.port.IntentClassifierPort {
+            override suspend fun classify(
+                message: String,
+                history: List<com.bank.banking.domain.model.ChatHistoryMessage>,
+            ) = classification
         }
 
         private val routeChatMessage = RouteChatMessageUseCase(intentClassifier)
@@ -209,22 +262,98 @@ class BuildChatUiUseCaseTest {
         private val balanceBuilder = BalanceUiBuilder(balanceUseCase)
         private val payBuilder = PayCreditCardUiBuilder(payCardsUseCase)
 
-        private val clarificationBuilder = ClarificationUiBuilder()
+        val clarificationBuilder = ClarificationUiBuilder()
+        private val greetingBuilder = GreetingUiBuilder(balanceUseCase)
         private val supportBuilder = SupportUiBuilder()
         private val notImplementedTransferBuilder = NotImplementedTransferUiBuilder()
 
+        private val chatSessions = object : ChatSessionRepository {
+            private val sessions = ConcurrentHashMap<String, ChatSession>()
+
+            override suspend fun create(userId: UserId): ChatSessionId {
+                val id = ChatSessionId("test-session")
+                sessions[id.value] = ChatSession(id, userId, emptyList(), System.currentTimeMillis())
+                return id
+            }
+
+            override suspend fun findForUser(sessionId: ChatSessionId, userId: UserId): ChatSession? =
+                sessions[sessionId.value]?.takeIf { it.userId == userId }
+
+            override suspend fun listRecentTurns(sessionId: ChatSessionId, userId: UserId, limit: Int): List<ChatTurn> =
+                findForUser(sessionId, userId)?.turns?.takeLast(limit) ?: emptyList()
+
+            override suspend fun listSessionsForUser(userId: UserId, limit: Int): List<com.bank.banking.domain.model.ChatHistoryEntry> =
+                sessions.values
+                    .filter { it.userId == userId }
+                    .sortedByDescending { it.updatedAtEpochMs }
+                    .take(limit)
+                    .map { session ->
+                        val last = session.turns.lastOrNull()
+                        com.bank.banking.domain.model.ChatHistoryEntry(
+                            sessionId = session.id.value,
+                            turnCount = session.turns.size,
+                            lastUserMessage = last?.userMessage ?: "",
+                            lastIntent = last?.intent,
+                            updatedAtEpochMs = session.updatedAtEpochMs,
+                        )
+                    }
+
+            override suspend fun appendTurn(sessionId: ChatSessionId, userId: UserId, turn: ChatTurn) {
+                val current = findForUser(sessionId, userId) ?: return
+                sessions[sessionId.value] = current.copy(turns = current.turns + turn)
+            }
+        }
+
         val useCase = BuildChatUiUseCase(
+            sessions = sessions,
+            chatSessions = chatSessions,
             routeChatMessage = routeChatMessage,
-            builderFactory = ChatUiBuilderFactory(
-                balance = balanceBuilder,
-                payCard = payBuilder,
-                support = supportBuilder,
-                clarification = clarificationBuilder,
-                notImplementedTransfer = notImplementedTransferBuilder,
+            builderFactory = chatUiBuilderFactory(
+                sessions = sessions,
+                chatSessions = chatSessions,
+                balanceBuilder = balanceBuilder,
+                payBuilder = payBuilder,
+                supportBuilder = supportBuilder,
+                clarificationBuilder = clarificationBuilder,
+                notImplementedTransferBuilder = notImplementedTransferBuilder,
             ),
             clarificationBuilder = clarificationBuilder,
             supportBuilder = supportBuilder,
+            greetingBuilder = greetingBuilder,
         )
+
+        fun chatUiBuilderFactory(
+            sessions: SessionRepository,
+            chatSessions: ChatSessionRepository,
+            balanceBuilder: BalanceUiBuilder,
+            payBuilder: PayCreditCardUiBuilder,
+            supportBuilder: SupportUiBuilder,
+            clarificationBuilder: ClarificationUiBuilder,
+            notImplementedTransferBuilder: NotImplementedTransferUiBuilder,
+        ): ChatUiBuilderFactory {
+            val expenses = object : ExpenseRepository {
+                override suspend fun summarizeByCategoryForMonth(
+                    userId: UserId,
+                    yearMonth: String,
+                ): MonthlyExpenseReport =
+                    MonthlyExpenseReport(
+                        yearMonth = yearMonth,
+                        categories = emptyList(),
+                        totalTransactionCount = 0,
+                        grandTotal = 0.0,
+                        currency = "PEN",
+                    )
+            }
+            return ChatUiBuilderFactory(
+                balance = balanceBuilder,
+                payCard = payBuilder,
+                chatHistory = ChatHistoryUiBuilder(ListChatHistoryUseCase(sessions, chatSessions)),
+                monthlyExpenses = MonthlyExpensesUiBuilder(GetMonthlyExpensesByCategoryUseCase(sessions, expenses)),
+                support = supportBuilder,
+                clarification = clarificationBuilder,
+                notImplementedTransfer = notImplementedTransferBuilder,
+            )
+        }
     }
 }
 

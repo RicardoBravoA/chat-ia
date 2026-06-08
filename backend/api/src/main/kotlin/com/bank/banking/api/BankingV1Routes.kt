@@ -10,6 +10,7 @@ import com.bank.banking.api.dto.PayCardRequest
 import com.bank.banking.api.dto.PayCardResponse
 import com.bank.banking.api.dto.ErrorResponse
 import com.bank.banking.application.usecase.PayCreditCardCommand
+import com.bank.banking.domain.model.ChatSessionId
 import com.bank.banking.domain.error.BadRequestException
 import com.bank.banking.domain.error.InvalidPaymentAmountException
 import com.bank.banking.domain.model.CreditCardPaymentMode
@@ -26,9 +27,7 @@ import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
-import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
-import kotlin.random.Random
 
 internal fun Route.bankingV1Routes(root: BankingCompositionRoot) {
     val wsJson = Json { ignoreUnknownKeys = true }
@@ -59,9 +58,14 @@ internal fun Route.bankingV1Routes(root: BankingCompositionRoot) {
                 try {
                     val text = frame.readText()
                     val req = wsJson.decodeFromString(ChatMessageRequest.serializer(), text)
-                    val waitMs = Random.nextLong(1_000, 3_001)
-                    delay(waitMs)
-                    val result = root.buildChatUiUseCase.execute(token, req.message).toResponse()
+                    val sessionId = req.sessionId?.trim()?.takeIf { it.isNotEmpty() }?.let { ChatSessionId(it) }
+                    val selectedIntent = req.selectedIntent?.trim()?.takeIf { it.isNotEmpty() }
+                    val result = root.buildChatUiUseCase.execute(
+                        token = token,
+                        message = req.message,
+                        sessionId = sessionId,
+                        selectedIntent = selectedIntent,
+                    ).toResponse()
                     val envelope = ChatWsEnvelope(
                         event = "chat_response",
                         response = result,
@@ -87,6 +91,19 @@ internal fun Route.bankingV1Routes(root: BankingCompositionRoot) {
                     nickname = result.nickname,
                 ),
             )
+        }
+
+        get("/me/chat/history") {
+            val t = call.requireBearerToken()
+            val sessions = root.listChatHistoryUseCase.execute(t)
+            call.respond(sessions.toChatHistoryResponse())
+        }
+
+        get("/me/expenses/by-category") {
+            val t = call.requireBearerToken()
+            val yearMonth = call.request.queryParameters["yearMonth"]
+            val report = root.monthlyExpensesUseCase.execute(t, yearMonth)
+            call.respond(report.toMonthlyExpensesResponse())
         }
 
         get("/credit-cards/with-debt") {

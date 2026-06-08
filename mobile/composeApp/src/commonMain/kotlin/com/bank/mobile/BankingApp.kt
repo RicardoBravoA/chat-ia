@@ -7,6 +7,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -19,11 +20,13 @@ import com.bank.mobile.data.repository.BankingRemoteDependencies
 import com.bank.mobile.data.repository.RemoteAuthRepository
 import com.bank.mobile.data.repository.RemoteHomeRepository
 import com.bank.mobile.data.repository.RemotePaymentsRepository
+import com.bank.mobile.domain.usecase.ConfirmSensitiveActionUseCase
 import com.bank.mobile.domain.usecase.GetBalanceUseCase
 import com.bank.mobile.domain.usecase.GetPaymentsUseCase
 import com.bank.mobile.domain.usecase.LoginUseCase
 import com.bank.mobile.domain.usecase.PayCreditCardUseCase
 import com.bank.mobile.domain.usecase.SendChatMessageUseCase
+import com.bank.mobile.platform.createBiometricAuthenticator
 import com.bank.mobile.presentation.ui.atoms.formatMoney
 import com.bank.mobile.presentation.ui.molecules.HomeTopBar
 import com.bank.mobile.presentation.navigation.BankNavRoutes
@@ -48,6 +51,9 @@ fun BankingApp() {
     val sendChatMessageUseCase = remember { SendChatMessageUseCase(homeRepository) }
     val getPaymentsUseCase = remember { GetPaymentsUseCase(paymentsRepository) }
     val payCreditCardUseCase = remember { PayCreditCardUseCase(homeRepository) }
+    val confirmSensitiveActionUseCase = remember {
+        ConfirmSensitiveActionUseCase(createBiometricAuthenticator())
+    }
 
     val authSession = remember { AuthSession() }
     val homeVm = remember {
@@ -62,6 +68,7 @@ fun BankingApp() {
         ChatViewModel(
             sendChatMessageUseCase = sendChatMessageUseCase,
             payCreditCardUseCase = payCreditCardUseCase,
+            confirmSensitiveActionUseCase = confirmSensitiveActionUseCase,
             authSession = authSession,
             onPaymentSuccess = { homeVm.refreshHomeData() },
         )
@@ -91,6 +98,10 @@ fun BankingApp() {
 
     SessionNavigationEffect(sessionState = sessionState, navController = navController)
 
+    LaunchedEffect(homeState.userNickname) {
+        chatVm.updateWelcomeNickname(homeState.userNickname)
+    }
+
     MaterialTheme {
         Surface {
             Scaffold(
@@ -115,6 +126,7 @@ fun BankingApp() {
                     chatDraft = chatState.draft,
                     onChatDraftChange = chatVm::onDraftChange,
                     onSendChat = chatVm::sendChatMessage,
+                    onQuickReply = chatVm::sendQuickReply,
                     chatSending = chatState.sending,
                     onPayCard = { action, mode, custom, key ->
                         chatVm.payCreditCard(action, mode, custom, key)

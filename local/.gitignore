@@ -2,9 +2,15 @@
 venv/
 .venv/
 
-# Caché de Hugging Face / sentence-transformers (pesados)
+# Caché / artefactos ML obsoletos (sklearn, HF, etc.)
 .cache/
 models/
+*.joblib
+*.pkl
+
+# Reportes generados por intent_eval.py
+reports/*
+!reports/.gitkeep
 
 # Python
 __pycache__/
@@ -13,12 +19,5 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 
-# Artefactos de entrenamiento
-*.joblib
-*.pkl
-
-# Backups de train_v1 al fusionar (finalize_intent_training.py)
 datasets/intents/.backups/
-
-# Suplemento opcional solo en tu máquina (si no quieres subirlo)
 datasets/intents/train_supplement.jsonl

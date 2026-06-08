@@ -43,7 +43,7 @@ python3 local/scripts/simulate_intent_validation.py   # desde raíz del repo
 | Login | `LoginUseCase`: credenciales válidas / inválidas; `LoginViewModel`: loading → success/error |
 | Saldo | `GetBalanceUseCase`: éxito / error de sesión |
 | Chat SDUI | `SendChatMessageUseCase` → `/v1/chat/message`; `SduiNodeMapperTest` |
-| Pago tarjeta | `PayCreditCardUseCase`: modos; idempotency; botón deshabilitado por mensaje tras pago exitoso |
+| Pago tarjeta | `PayCreditCardUseCase`: modos; idempotency; botón deshabilitado por mensaje tras pago exitoso; **biometría antes del POST** |
 | Política presentación (backend) | Clarificación / soporte | `ChatPresentationPolicyTest.kt` (backend) |
 
 ### Patrón recomendado — use case
@@ -113,9 +113,11 @@ class PayCreditCardUseCaseTest {
 |--------|-----------|------|
 | `simulate_intent_validation.py` | `eval_v1.jsonl` — intención por frase | Exit 0 = pasa benchmark |
 | `simulate_dialogue_validation.py` | `dialogue_eval_v1.jsonl` — intención + next action | Exit 0 = pasa |
-| `train_intent_classifier.py --eval` | Métricas en eval al entrenar | Revisar accuracy en consola |
+| `simulate_intent_validation.py` | Benchmark Woz vs `eval_v1.jsonl` | Exit code 0; requiere Ollama |
+| `simulate_dialogue_validation.py` | Multi-turn benchmark | Exit code 0; requiere Ollama |
+| `intent_eval.py --provider woz` | Promotion gate + reportes | Revisar `local/reports/` |
 
-Umbrales de promotion: `local/config/thresholds.json` (usado por `intent_eval.py` / `learn_until_pass.py`).
+Umbrales de promotion: `local/config/thresholds.json` (usado por `intent_eval.py`).
 
 ### Tests unitarios Python (recomendado al extraer lógica)
 

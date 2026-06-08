@@ -6,12 +6,26 @@ Blueprint de IA de referencia: `docs/ai-chat-backend-blueprint.md`.
 ## 1. Flujo actual (implementado)
 
 ```
-Usuario → POST /v1/chat/message → { uiTree, correlationId, metadata }
+Usuario → WS /v1/chat/ws (`ChatMessageRequest`: `message` + `sessionId` opcional)
+       → BuildChatUiUseCase (sesión Mongo + historial a Woz)
+       → { uiTree, correlationId, sessionId, metadata }
        → SduiRenderer (PayCardChatPanel, BalanceCard, …)
        → Pago: PayCreditCardUseCase → POST /v1/credit-cards/{id}/payments
 ```
 
 Legacy (solo clasificación, eval de intents): `POST /v1/chat/route`.
+
+### Sesión multi-turn (P1)
+
+- Colección Mongo `chat_sessions`: turnos `{ userMessage, intent, entities, confidence, reason, routerSource, correlationId }`.
+- Primer mensaje sin `sessionId` → backend crea sesión y devuelve `sessionId` en `ChatMessageResponse`.
+- Mobile reenvía el mismo `sessionId` en cada mensaje del hilo.
+- Woz recibe los últimos **6** turnos; el mensaje `assistant` del historial es **JSON compacto** con clasificación previa.
+
+### Copy grounded (P2)
+
+- `GroundedChatCopy` genera `AssistantText` con datos reales (nickname, saldo, deuda, alias de tarjeta, monto de entidades).
+- No usa LLM para redactar al usuario; evita inventar cifras.
 
 ## 1b. Problema que resolvía SDUI
 
@@ -89,6 +103,9 @@ Mapeo directo desde UI **ya existente** en mobile:
 | `SupportChannelsCard` | `OutOfScopeSupportCard` | URLs de soporte (desde config backend) |
 | `PaymentReceiptCard` | `PaymentSuccessReceiptCard` | `amountPaid`, `movementId`, `currency`, … |
 | `InfoBanner` | nuevo átomo simple | `text`, `severity` |
+| `GreetingCard` | `ChatGreetingCard` | `message`, `actions[]` (`QUICK_REPLY` con `payload.intent`) |
+| `ChatHistoryRow` | `ChatHistoryRowCard` | `sessionLabel`, `lastMessage`, `turnCount`, `timeLabel`, `lastIntent` |
+| `SpendingCategoryRow` | `SpendingCategoryRowCard` | `category`, `transactionCount`, `totalAmountFormatted` |
 | `Column` | contenedor | `children[]` |
 | `TypingIndicator` | `ChatTypingDots` | — |
 

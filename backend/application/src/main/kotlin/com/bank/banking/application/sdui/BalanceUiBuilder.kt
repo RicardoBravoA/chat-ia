@@ -11,11 +11,14 @@ class BalanceUiBuilder(
         val formatted = result.balance.formatForDisplay()
         return SduiNodeFactory.column(
             "balance-root",
-            SduiNodeFactory.assistantText("balance-intro", "Tu saldo disponible es:"),
+            SduiNodeFactory.assistantText(
+                "balance-intro",
+                GroundedChatCopy.balanceIntro(result.nickname, formatted),
+            ),
             SduiNodeFactory.balanceCard("balance-card", formatted, result.balance.currency),
             SduiNodeFactory.assistantText(
                 "balance-follow-up",
-                "¿Te gustaría realizar alguna transferencia o ver tus movimientos recientes?",
+                GroundedChatCopy.balanceFollowUp(),
             ),
         )
     }

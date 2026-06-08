@@ -1,131 +1,50 @@
-# Llevar el entorno local a otra laptop
+# Llevar Woz a otra laptop
 
-Checklist para reproducir el **clasificador de intenciones** (TF-IDF + SVM) y validar que “aprendió”, sin depender de esta máquina.
+Checklist para reproducir **Woz** (LLM local vía Ollama) y validar benchmarks.
 
-## Qué necesitas en la otra laptop
-
-- **Git** (para clonar o traer el repo) o una copia del proyecto.
-- **Python 3.10 o superior** (3.14 sirve para el núcleo `requirements.txt`).
-- Conexión a internet la **primera vez** (`pip install`).
-
-No hace falta PyTorch ni `requirements-embeddings.txt` para este flujo.
-
-Los comandos con `python3 local/scripts/...` deben lanzarse desde la **raíz del clon** (`ia/`). Si tu terminal está en `local/`, usa `python3 scripts/...` (sin `local/`).
-
-## Pasos (desde cero)
-
-### 1. Obtener el código
+## 1. Clonar repo
 
 ```bash
-git clone <url-de-tu-repo> ia
-cd ia
+git clone <url> ia && cd ia
 ```
 
-(Si copias la carpeta con USB, entra en la raíz del repo donde están `local/`.)
+## 2. Instalar Ollama (oficial, no Homebrew en macOS)
 
-### 2. Entorno virtual solo bajo `local/`
-
-En macOS/Linux:
+En **macOS**, evita `brew install ollama` para modelos GGUF (`qwen2.5`): falta `llama-server` → HTTP 500.
 
 ```bash
-python3 -m venv local/venv
-source local/venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r local/requirements.txt
+brew uninstall ollama 2>/dev/null || true
+curl -fsSL https://ollama.com/install.sh | sh
+# o https://ollama.com/download
+ollama pull qwen2.5:7b-instruct
+ollama list
 ```
 
-En Windows (PowerShell):
+## 3. Probar clasificación
 
-```powershell
-python -m venv local\venv
-.\local\venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r local/requirements.txt
-```
-
-Comprueba:
+Desde la raíz del repo:
 
 ```bash
-python -c "import sklearn, numpy; print('OK')"
-```
-
-### 3. Datos en `local/datasets/intents/` (y ciclo de aprendizaje)
-
-El **dataset base** (`train_v1.jsonl`) y el **augment** (`train_augment.jsonl`) están en **`local/datasets/intents/`**.  
-En esa misma carpeta añades lo demás para seguir entrenando:
-
-- **`chat_errors.jsonl`** — **Va en Git**: correcciones cuando el modelo falla (benchmark o chat). Tras validar, haz `commit` para que en otra laptop existan las mismas frases de refuerzo.
-- **`train_supplement.jsonl`** — Opcional (plantilla: `train_supplement.jsonl.example`); por defecto está en `.gitignore` si no quieres subir frases propias; puedes forzar el commit si lo deseas.
-
-Flujo detallado: [datasets/intents/README.md](datasets/intents/README.md).
-
-### 4. Entrenar (aprender) con todo lo anterior
-
-```bash
-python3 local/scripts/train_intent_classifier.py --eval
-```
-
-Se usan: `local/datasets/intents/train_v1.jsonl`, `train_augment.jsonl` si existe, más `train_supplement.jsonl` y líneas de `chat_errors.jsonl` que tengan **`intent`** rellenado.
-
-Genera:
-
-- `local/models/intent_tfidf_svc.joblib` (ignorado por Git; en otra laptop lo regeneras o copias el archivo).
-
-### 5. Simular, validar y guardar errores para el siguiente entrenamiento
-
-Benchmark fijo (`eval_v1.jsonl`):
-
-```bash
+python3 local/scripts/predict_intent_woz.py "quiero pagar la tarjeta"
 python3 local/scripts/simulate_intent_validation.py
 ```
 
-Si hubo fallos y quieres **volcarlos** a `local/datasets/intents/chat_errors.jsonl` (con la intención correcta ya puesta) para reentrenar después:
+## 4. Backend con Woz
 
 ```bash
-python3 local/scripts/simulate_intent_validation.py --append-errors
+cd backend && ./gradlew :api:run
 ```
 
-Modo tipo chat: escribes frases y, si la predicción es mala, indicas la intención correcta; eso se guarda en el mismo `chat_errors.jsonl`:
+Variables opcionales: `WOZ_MODEL`, `WOZ_OLLAMA_BASE_URL`, `INTENT_ROUTER_MODE=auto`.
 
-```bash
-python3 local/scripts/simulate_intent_validation.py --interactive --record-chat
-```
+## 5. Qué no va en Git (regenerable o local)
 
-Una sola frase (sin guardar):
+| Path | Notas |
+|------|-------|
+| `local/venv/` | Opcional (scripts usan stdlib) |
+| `local/reports/` | Salida de `intent_eval.py` (gitignored) |
+| `local/models/` | Obsoleto (sklearn); no usar |
 
-```bash
-python3 local/scripts/simulate_intent_validation.py --message "cuanto tengo en el banco"
-```
+Los datasets `eval_v1.jsonl`, `dialogue_eval_v1.jsonl`, `train_v1.jsonl` y `chat_errors.jsonl` **sí** van en Git.
 
-Detalle de formatos y flujo: [datasets/intents/README.md](datasets/intents/README.md).
-
-### 6. (Opcional) Probar una sola predicción
-
-```bash
-python3 local/scripts/predict_intent.py "quiero pagar la tarjeta"
-```
-
-## Si no quieres volver a entrenar
-
-Puedes copiar solo el artefacto entre laptops (misma versión de dependencias recomendada: mismo `local/requirements.txt` y mismo Python mayor si es posible):
-
-- Origen: `local/models/intent_tfidf_svc.joblib`
-- Destino: la misma ruta en el otro clon.
-
-Opcional: si usas `train_supplement.jsonl` solo en tu máquina, cópialo aparte. `chat_errors.jsonl` debería llegar con el **clone/pull** del repo si el equipo lo sube.
-
-Luego ejecuta el paso 5 para validar.
-
-## Qué no suele viajar en Git
-
-| Ruta | Motivo |
-|------|--------|
-| `local/venv/` | Entorno virtual; se recrea en cada máquina |
-| `local/models/*.joblib` | Modelo entrenado; ignorado por git |
-| `local/datasets/intents/train_supplement.jsonl` | Opcional ignorado; solo si no quieres subirlo |
-| `local/.cache/` | Caché opcional (p. ej. Hugging Face) |
-
-## Más documentación
-
-- Datos locales y ciclo error → reentreno: `local/datasets/intents/README.md`
-- Detalle del entorno Python: `local/README.md`
+**Runtime del backend:** solo necesita `local/config/intent_heuristic.json` (fallback JVM) además de Ollama.

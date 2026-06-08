@@ -27,6 +27,7 @@ data class UiMetadata(
 data class UiResponse(
     val schemaVersion: Int,
     val correlationId: String,
+    val sessionId: String,
     val userMessage: String,
     val uiTree: UiNode,
     val metadata: UiMetadata,

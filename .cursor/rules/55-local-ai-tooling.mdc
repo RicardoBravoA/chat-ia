@@ -4,36 +4,32 @@ globs: local/**/*
 alwaysApply: false
 ---
 
-# Local AI Tooling
+# Local AI Tooling — Woz
 
-- All Python, venv, models, and HF cache live under `local/` only.
+- All Python scripts and benchmarks live under `local/` only.
 - Run scripts from **repo root**: `python3 local/scripts/<script>.py`.
-- Core deps: `local/requirements.txt` (sklearn, Python 3.10–3.14).
-- Embeddings: `requirements-embeddings.txt` requires Python 3.11/3.12 (PyTorch).
+- **Woz** classifies intents via **Ollama** (stdlib Python; no mandatory pip deps).
+- Env: `WOZ_OLLAMA_BASE_URL`, `WOZ_MODEL`, `WOZ_TIMEOUT_SECONDS`.
 
-## Training pipeline
+## Validation = benchmark scripts (required for routing PRs)
 
+```bash
+python3 local/scripts/simulate_intent_validation.py
+python3 local/scripts/simulate_dialogue_validation.py
+python3 local/scripts/intent_eval.py --provider woz --version woz-v1
 ```
-train_v1 + train_augment + train_supplement + chat_errors (labeled)
-  → train_intent_classifier.py [--eval]
-  → local/models/intent_tfidf_svc.joblib
-```
 
-## Validation = benchmark scripts (not optional for classifier PRs)
-
-- `simulate_intent_validation.py` — `eval_v1.jsonl`
-- `simulate_dialogue_validation.py` — `dialogue_eval_v1.jsonl`
-- Exit code 0 required before merge when datasets or model logic change.
+Requires Ollama running with the configured model.
 
 ## Rules for scripts
 
-- Pure helpers testable → extract to importable module + `local/tests/` with pytest.
+- Shared client: `local/scripts/woz_client.py`.
 - Scripts must not execute banking operations or call production APIs without explicit flags.
-- LLM eval (`intent_eval.py`, `learn_until_pass.py`) requires `ANTHROPIC_API_KEY`; results go to `local/reports/`.
+- Optional cloud compare: `intent_eval.py --provider anthropic|openai` → `local/reports/`.
 
 ## Dataset versioning
 
-- Version in Git: `train_v1.jsonl`, `eval_v1.jsonl`, `chat_errors.jsonl`, `dialogue_eval_v1.jsonl`.
-- Do not auto-modify `eval_v1.jsonl` during training — benchmark is fixed.
+- Version in Git: `eval_v1.jsonl`, `dialogue_eval_v1.jsonl`, `chat_errors.jsonl`, `train_v1.jsonl` (reference examples).
+- Do not auto-modify `eval_v1.jsonl` — benchmark is fixed.
 
 See `local/README.md` and `local/datasets/intents/README.md`.

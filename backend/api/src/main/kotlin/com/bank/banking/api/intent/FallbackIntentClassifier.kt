@@ -1,5 +1,6 @@
 package com.bank.banking.api.intent
 
+import com.bank.banking.domain.model.ChatHistoryMessage
 import com.bank.banking.domain.model.IntentClassification
 import com.bank.banking.domain.port.IntentClassifierPort
 
@@ -11,16 +12,19 @@ class FallbackIntentClassifier(
     private val fallback: IntentClassifierPort,
     private val fallbackOnResult: (IntentClassification) -> Boolean = { false },
 ) : IntentClassifierPort {
-    override suspend fun classify(message: String): IntentClassification {
+    override suspend fun classify(
+        message: String,
+        history: List<ChatHistoryMessage>,
+    ): IntentClassification {
         return try {
-            val primaryResult = primary.classify(message)
+            val primaryResult = primary.classify(message, history)
             if (fallbackOnResult(primaryResult)) {
-                fallback.classify(message)
+                fallback.classify(message, history)
             } else {
                 primaryResult
             }
         } catch (_: Exception) {
-            fallback.classify(message)
+            fallback.classify(message, history)
         }
     }
 }

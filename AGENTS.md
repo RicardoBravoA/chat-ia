@@ -10,7 +10,7 @@ sobre velocidad de entrega.
 |------|-------------------|
 | **Mobile (KMP)** | Clean Architecture en un solo módulo Gradle; Compose Multiplatform; ViewModel + StateFlow; tests en `commonTest`. |
 | **Backend (Kotlin JVM)** | Hexagonal: `domain` → `application` → `infrastructure-mongo` → `api` (Ktor); casos de uso testeables; idempotencia en pagos. |
-| **IA local (Python)** | Pipeline sklearn TF-IDF; benchmarks JSONL; scripts bajo `local/`; no inventar balances ni ejecutar dinero. |
+| **IA local (Woz)** | LLM local Ollama; benchmarks JSONL; scripts bajo `local/`; no inventar balances ni ejecutar dinero. |
 | **Orquestación chat** | Backend clasifica intención; mobile aplica política de UI; operaciones monetarias solo con confirmación explícita vía API. |
 | **SDUI (chat)** | Backend `BuildChatUiUseCase` + builders; mobile `SduiRenderer`; endpoint `POST /v1/chat/message`. |
 
@@ -20,7 +20,7 @@ sobre velocidad de entrega.
 ia/
 ├── mobile/          # KMP Compose — módulo :composeApp
 ├── backend/         # Ktor + MongoDB — domain, application, infrastructure-mongo, api
-├── local/           # Python: entrenamiento, benchmarks, heurísticas
+├── local/           # Woz: scripts Python, benchmarks, config heurística
 ├── docs/            # Blueprints, runbooks, contratos
 └── .cursor/rules/   # Reglas persistentes para el agente
 ```
@@ -56,12 +56,11 @@ Ver: `.cursor/rules/20-backend-architecture.mdc`, `.cursor/rules/25-backend-api-
 
 ## IA local — cómo trabajar
 
-- **Todo Python vive en `local/`** — venv, modelos, datasets, scripts.
+- **Todo Python vive en `local/`** — scripts de benchmark (stdlib; venv opcional).
+- **Ollama en marcha** antes de probar chat o benchmarks: `ollama serve` + `ollama pull qwen2.5:7b-instruct`.
 - **Comandos desde la raíz del repo:** `python3 local/scripts/...`
-- **Entrenar:** `train_intent_classifier.py --eval` → `local/models/intent_tfidf_svc.joblib`.
-- **Validar antes de merge:** `simulate_intent_validation.py` y/o `simulate_dialogue_validation.py`.
-- **Intenciones canónicas:** `CHECK_BALANCE`, `PAY_CREDIT_CARD`, `TRANSFER_OWN_ACCOUNTS`, `TRANSFER_THIRD_PARTY`, `AMBIGUOUS`, `OUT_OF_SCOPE`.
-- **No sustituir backend** — el `.joblib` alimenta el router; no ejecuta operaciones bancarias.
+- **Validar Woz:** `simulate_intent_validation.py`, `intent_eval.py --provider woz` (Ollama en marcha).
+- **No sustituir backend** — Woz clasifica intención; use cases ejecutan operaciones bancarias.
 
 Ver: `.cursor/rules/55-local-ai-tooling.mdc`, `docs/intent-routing-contract.md`.
 

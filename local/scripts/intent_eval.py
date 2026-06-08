@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Evaluación de intenciones con Anthropic / OpenAI / reglas. Rutas solo bajo `local/`:
+Evaluación de intenciones con Woz (Ollama local) / Anthropic / OpenAI / reglas.
+Rutas solo bajo `local/`:
 - local/datasets/intents/eval_v1.jsonl
 - local/config/thresholds.json
 - local/mocks/mock-user-context.json
 - local/reports/ (salidas)
 
-Uso (desde la raíz del repo): python3 local/scripts/intent_eval.py --provider anthropic
+Uso (desde la raíz del repo): python3 local/scripts/intent_eval.py --provider woz
 """
 import argparse
 import csv
@@ -20,6 +21,12 @@ import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+
+from woz_client import classify_with_woz  # noqa: E402
 
 
 INTENTS = {
@@ -242,6 +249,17 @@ def predict_with_openai(
     return normalize_prediction(data)
 
 
+def predict_with_woz(user_text: str, model: str = "") -> Prediction:
+    pred = classify_with_woz(user_text, model=model or None)
+    return Prediction(
+        intent=pred.intent,
+        confidence=pred.confidence,
+        entities=pred.entities,
+        clarification_needed=pred.clarification_needed,
+        reason=pred.reason,
+    )
+
+
 def predict_with_rule(user_text: str) -> Prediction:
     text = user_text.lower()
     entities: Dict[str, Any] = {}
@@ -411,7 +429,7 @@ def compute_promotion_failures(
             f"<= {gate['maxFallbackRate']}",
             [
                 "Revisa casos en byFlow.errors donde predictedIntent sea AMBIGUOUS u OUT_OF_SCOPE.",
-                "Anade esos textos a train_augment con la intencion correcta del benchmark.",
+                "Anade esos textos a chat_errors.jsonl o train_v1.jsonl con la intencion correcta del benchmark.",
                 "No penalizan las respuestas correctas AMBIGUOUS/OUT_OF_SCOPE (ver rawFallbackRate en el reporte).",
             ],
         )
@@ -469,7 +487,7 @@ def append_metrics_csv(path: Path, row: Dict[str, Any]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run local intent evaluation with LLM/provider")
-    parser.add_argument("--provider", choices=["anthropic", "openai", "rule"], default="rule")
+    parser.add_argument("--provider", choices=["woz", "anthropic", "openai", "rule"], default="woz")
     parser.add_argument("--model", default="")
     parser.add_argument("--version", default="v1")
     parser.add_argument("--dataset-version", default="eval_v1")
@@ -487,7 +505,7 @@ def main() -> int:
     parser.add_argument(
         "--few-shot-augment",
         default="",
-        help="JSONL extra (ej. train_augment.jsonl) generado por el loop de aprendizaje.",
+        help="JSONL extra opcional para few-shot (solo anthropic/openai). Ruta explicita; no hay default en repo.",
     )
     parser.add_argument(
         "--max-few-shot",
@@ -506,19 +524,19 @@ def main() -> int:
 
     intents_local = root / "local" / "datasets" / "intents"
     base_path = Path(args.few_shot_base) if args.few_shot_base else intents_local / "train_v1.jsonl"
-    augment_path = Path(args.few_shot_augment) if args.few_shot_augment else intents_local / "train_augment.jsonl"
+    augment_path = Path(args.few_shot_augment) if args.few_shot_augment else None
     few_shot: Optional[List[Dict[str, Any]]] = None
     few_stats: Dict[str, Any] = {"enabled": False, "basePath": None, "augmentPath": None}
     if args.provider in {"anthropic", "openai"}:
         few_shot, few_stats = load_few_shot_examples(
             root,
             base_path if base_path.is_file() else None,
-            augment_path if augment_path.is_file() else None,
+            augment_path if augment_path is not None and augment_path.is_file() else None,
             max_total=args.max_few_shot,
         )
         few_stats["enabled"] = bool(few_shot)
         few_stats["basePath"] = str(base_path) if base_path.is_file() else None
-        few_stats["augmentPath"] = str(augment_path) if augment_path.is_file() else None
+        few_stats["augmentPath"] = str(augment_path) if augment_path and augment_path.is_file() else None
     else:
         few_shot = None
 
@@ -552,7 +570,10 @@ def main() -> int:
         is_sensitive = bool(r.get("sensitive"))
 
         try:
-            if args.provider == "anthropic":
+            if args.provider == "woz":
+                woz_model = args.model or os.getenv("WOZ_MODEL", "qwen2.5:7b-instruct")
+                pred = predict_with_woz(text, woz_model)
+            elif args.provider == "anthropic":
                 anthropic_model = args.model or os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
                 pred = predict_with_anthropic(
                     text,
@@ -663,6 +684,7 @@ def main() -> int:
             "provider": args.provider,
             "model": (
                 args.model
+                or (os.getenv("WOZ_MODEL", "qwen2.5:7b-instruct") if args.provider == "woz" else "")
                 or ("internal-rule-baseline" if args.provider == "rule" else "")
                 or (os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6") if args.provider == "anthropic" else "")
             ),

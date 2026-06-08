@@ -10,6 +10,27 @@ import kotlin.test.assertTrue
 
 class SduiNodeMapperTest {
     @Test
+    fun mapsGreetingCardQuickReplies() {
+        val node = UiNode(
+            id = "g1",
+            type = UiComponentType.GREETING_CARD,
+            props = mapOf("message" to "Hola"),
+            actions = listOf(
+                com.bank.mobile.domain.model.sdui.UiAction(
+                    id = "q1",
+                    label = "Ver saldo",
+                    actionType = "QUICK_REPLY",
+                    payload = mapOf("intent" to "CHECK_BALANCE"),
+                ),
+            ),
+        )
+
+        assertEquals("Hola", node.propText("message"))
+        assertEquals(1, node.actions.size)
+        assertEquals("CHECK_BALANCE", node.actions.first().payload["intent"])
+    }
+
+    @Test
     fun mapsPayCardPanelPropsToAction() {
         val node = UiNode(
             id = "p1",
@@ -46,6 +67,38 @@ class SduiNodeMapperTest {
         )
         val flat = tree.flattenForChat()
         assertEquals(2, flat.size)
+    }
+
+    @Test
+    fun mapsChatHistoryRowProps() {
+        val node = UiNode(
+            id = "h1",
+            type = UiComponentType.CHAT_HISTORY_ROW,
+            props = mapOf(
+                "sessionLabel" to "Conversación 1",
+                "lastMessage" to "ver saldo",
+                "turnCount" to "2",
+                "timeLabel" to "01/06/2024 10:00",
+                "lastIntent" to "CHECK_BALANCE",
+            ),
+        )
+        assertEquals("Conversación 1", node.propText("sessionLabel"))
+        assertEquals(2, node.propInt("turnCount"))
+    }
+
+    @Test
+    fun mapsSpendingCategoryRowProps() {
+        val node = UiNode(
+            id = "s1",
+            type = UiComponentType.SPENDING_CATEGORY_ROW,
+            props = mapOf(
+                "category" to "Alimentación",
+                "transactionCount" to "3",
+                "totalAmountFormatted" to "96.25 PEN",
+            ),
+        )
+        assertEquals("Alimentación", node.propText("category"))
+        assertEquals(3, node.propInt("transactionCount"))
     }
 
     @Test

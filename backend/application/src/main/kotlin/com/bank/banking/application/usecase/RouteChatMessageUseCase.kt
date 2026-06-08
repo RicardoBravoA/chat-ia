@@ -3,6 +3,7 @@ package com.bank.banking.application.usecase
 import com.bank.banking.application.BackendRouteResolver
 import com.bank.banking.domain.error.BadRequestException
 import com.bank.banking.domain.model.BackendRouteHint
+import com.bank.banking.domain.model.ChatHistoryMessage
 import com.bank.banking.domain.model.IntentClassification
 import com.bank.banking.domain.port.IntentClassifierPort
 
@@ -15,7 +16,10 @@ data class ChatRouteResult(
 class RouteChatMessageUseCase(
     private val intentClassifier: IntentClassifierPort,
 ) {
-    suspend fun execute(message: String): ChatRouteResult {
+    suspend fun execute(
+        message: String,
+        history: List<ChatHistoryMessage> = emptyList(),
+    ): ChatRouteResult {
         val trimmed = message.trim()
         if (trimmed.isEmpty()) {
             throw BadRequestException("message must not be blank")
@@ -23,7 +27,7 @@ class RouteChatMessageUseCase(
         if (trimmed.length > 4_000) {
             throw BadRequestException("message too long")
         }
-        val classification = intentClassifier.classify(trimmed)
+        val classification = intentClassifier.classify(trimmed, history)
         val suggested = BackendRouteResolver.resolve(classification)
         return ChatRouteResult(
             userMessage = trimmed,

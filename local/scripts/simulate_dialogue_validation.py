@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 """
-Valida aprendizaje conversacional local (sin online, sin mobile).
+Valida conversación Woz (intent + next action) contra dialogue_eval_v1.jsonl.
 
-Evalua cada turno con dos objetivos:
-1) expectedIntent: la intencion clasificada.
-2) expectedNextAction: la accion conversacional esperada.
-
-Uso (raiz del repo):
+Uso (raíz del repo):
   python3 local/scripts/simulate_dialogue_validation.py
   python3 local/scripts/simulate_dialogue_validation.py --append-errors
 """
@@ -15,14 +11,18 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
-import joblib
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
 
-DEFAULT_CLARIFY_THRESHOLD = 0.35
+from woz_client import classify_with_woz, decide_next_action  # noqa: E402
+
+DEFAULT_CLARIFY_THRESHOLD = 0.55
 
 
 def repo_root_from_here() -> Path:
@@ -75,58 +75,7 @@ def append_error_records(path: Path, records: List[Dict[str, Any]]) -> int:
     return written
 
 
-def load_pipeline(model_path: Path):
-    if not model_path.is_file():
-        raise SystemExit(
-            f"No existe {model_path}. Entrena primero:\n"
-            "  python3 local/scripts/train_intent_classifier.py --eval"
-        )
-    artifact = joblib.load(model_path)
-    return artifact["pipeline"]
-
-
-def softmax(values: List[float]) -> List[float]:
-    m = max(values)
-    exps = [math.exp(v - m) for v in values]
-    s = sum(exps)
-    if s <= 0:
-        return [0.0 for _ in values]
-    return [v / s for v in exps]
-
-
-def predict_intent_with_confidence(pipeline, text: str) -> Tuple[str, float]:
-    intent = pipeline.predict([text])[0]
-    scores = pipeline.decision_function([text])
-    classes = list(pipeline.named_steps["clf"].classes_)
-
-    if isinstance(scores[0], list) or getattr(scores, "ndim", 1) > 1:
-        row = list(scores[0])
-        probs = softmax([float(v) for v in row])
-        confidence = max(probs) if probs else 0.0
-        return intent, float(confidence)
-
-    # Binario: decision_function devuelve margen escalar.
-    margin = float(scores[0])
-    confidence = 1.0 / (1.0 + math.exp(-abs(margin)))
-    return intent, confidence
-
-
-def decide_next_action(intent: str, confidence: float, clarify_threshold: float) -> str:
-    if intent == "AMBIGUOUS" or confidence < clarify_threshold:
-        return "ASK_CLARIFICATION"
-    if intent == "CHECK_BALANCE":
-        return "SHOW_BALANCE"
-    if intent == "PAY_CREDIT_CARD":
-        return "SHOW_PAY_CARD_OPTIONS"
-    if intent in ("TRANSFER_OWN_ACCOUNTS", "TRANSFER_THIRD_PARTY"):
-        return "SHOW_TRANSFER_GUIDE"
-    if intent == "OUT_OF_SCOPE":
-        return "SHOW_SUPPORT"
-    return "GENERIC_REPLY"
-
-
 def run_dialogue_eval(
-    pipeline,
     eval_path: Path,
     clarify_threshold: float,
     append_errors: bool,
@@ -152,10 +101,10 @@ def run_dialogue_eval(
         if not isinstance(text, str) or not isinstance(expected_intent, str) or not isinstance(expected_action, str):
             continue
         total += 1
-        predicted_intent, confidence = predict_intent_with_confidence(pipeline, text)
-        predicted_action = decide_next_action(predicted_intent, confidence, clarify_threshold)
+        pred = classify_with_woz(text)
+        predicted_action = decide_next_action(pred.intent, pred.confidence, clarify_threshold)
 
-        ok_intent = predicted_intent == expected_intent
+        ok_intent = pred.intent == expected_intent
         ok_action = predicted_action == expected_action
         ok = ok_intent and ok_action
 
@@ -166,7 +115,7 @@ def run_dialogue_eval(
                     {
                         "text": text,
                         "intent": expected_intent,
-                        "predictedIntent": predicted_intent,
+                        "predictedIntent": pred.intent,
                         "source": "dialogue_eval_fail",
                         "caseId": f"{sid}-T{turn}",
                         "entities": {},
@@ -177,8 +126,8 @@ def run_dialogue_eval(
 
         mark = "OK " if ok else "BAD"
         print(
-            f"{mark} {sid} T{turn} intent exp={expected_intent} got={predicted_intent} | "
-            f"action exp={expected_action} got={predicted_action} | conf={confidence:.3f}"
+            f"{mark} {sid} T{turn} intent exp={expected_intent} got={pred.intent} | "
+            f"action exp={expected_action} got={predicted_action} | conf={pred.confidence:.3f}"
         )
         if not ok:
             print(f"    text={text!r}")
@@ -200,9 +149,8 @@ def run_dialogue_eval(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Valida conversacion local (intent + next action)")
+    parser = argparse.ArgumentParser(description="Valida conversación Woz (intent + next action)")
     parser.add_argument("--repo-root", type=Path, default=None)
-    parser.add_argument("--model", type=Path, default=None)
     parser.add_argument("--eval", type=Path, default=None)
     parser.add_argument("--append-errors", action="store_true")
     parser.add_argument("--errors-file", type=Path, default=None)
@@ -211,18 +159,15 @@ def main() -> None:
         "--clarify-threshold",
         type=float,
         default=DEFAULT_CLARIFY_THRESHOLD,
-        help="Umbral de confianza para pedir aclaracion (default: 0.35)",
+        help="Umbral de confianza para pedir aclaracion (default: 0.55)",
     )
     args = parser.parse_args()
 
     root = args.repo_root or repo_root_from_here()
-    model_path = args.model or (root / "local" / "models" / "intent_tfidf_svc.joblib")
     eval_path = args.eval or (root / "local" / "datasets" / "intents" / "dialogue_eval_v1.jsonl")
     errors_path = args.errors_file or default_errors_path(root)
 
-    pipeline = load_pipeline(model_path)
     code = run_dialogue_eval(
-        pipeline=pipeline,
         eval_path=eval_path,
         clarify_threshold=max(0.0, min(1.0, args.clarify_threshold)),
         append_errors=args.append_errors,

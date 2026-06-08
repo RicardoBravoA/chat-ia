@@ -95,6 +95,14 @@
           "pago tc",
           "paga mi tc",
           "pagar mi tc",
+          "pagando mi tc",
+          "pagando mi tarjeta",
+          "pagando la tc",
+          "pagando la tarjeta",
+          "pagando tc",
+          "pagando tarjeta",
+          "puedes ayudarme pagando",
+          "ayudarme pagando mi tc",
           "abonar tarjeta",
           "abonar tc",
           "abona mi tc",
@@ -180,6 +188,40 @@
       "conditionalEntities": [
         { "whenSubstring": "oro", "set": { "cardAlias": "oro" } }
       ]
+    },
+    {
+      "intent": "VIEW_CHAT_HISTORY",
+      "confidence": 0.9,
+      "match": {
+        "kind": "anySubstring",
+        "values": [
+          "historial de chat",
+          "historial del chat",
+          "historial de conversaciones",
+          "mis conversaciones",
+          "ver historial",
+          "chats anteriores",
+          "conversaciones anteriores"
+        ]
+      }
+    },
+    {
+      "intent": "MONTHLY_EXPENSES",
+      "confidence": 0.9,
+      "match": {
+        "kind": "anySubstring",
+        "values": [
+          "gastos del mes",
+          "mis gastos",
+          "donde va mi dinero",
+          "dónde va mi dinero",
+          "gastos por categoria",
+          "gastos por categoría",
+          "resumen de gastos",
+          "cuanto gaste",
+          "cuánto gasté"
+        ]
+      }
     },
     {
       "intent": "TRANSFER_OWN_ACCOUNTS",

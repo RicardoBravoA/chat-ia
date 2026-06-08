@@ -13,6 +13,7 @@ fun ChatMessageResponseDto.toDomain(): ChatUiResponse =
     ChatUiResponse(
         schemaVersion = schemaVersion,
         correlationId = correlationId,
+        sessionId = sessionId,
         userMessage = userMessage,
         uiTree = uiTree.toDomain(),
         metadata = metadata.toDomain(),

@@ -6,9 +6,14 @@ import com.bank.banking.application.usecase.GetCurrentBalanceUseCase
 import com.bank.banking.application.sdui.BalanceUiBuilder
 import com.bank.banking.application.sdui.ChatUiBuilderFactory
 import com.bank.banking.application.sdui.ClarificationUiBuilder
+import com.bank.banking.application.sdui.GreetingUiBuilder
 import com.bank.banking.application.sdui.NotImplementedTransferUiBuilder
 import com.bank.banking.application.sdui.PayCreditCardUiBuilder
 import com.bank.banking.application.sdui.SupportUiBuilder
+import com.bank.banking.application.sdui.ChatHistoryUiBuilder
+import com.bank.banking.application.sdui.MonthlyExpensesUiBuilder
+import com.bank.banking.application.usecase.GetMonthlyExpensesByCategoryUseCase
+import com.bank.banking.application.usecase.ListChatHistoryUseCase
 import com.bank.banking.application.usecase.ListCreditCardMovementsUseCase
 import com.bank.banking.application.usecase.ListCreditCardsWithDebtUseCase
 import com.bank.banking.application.usecase.ListUserCardMovementsUseCase
@@ -20,7 +25,9 @@ import com.bank.banking.infra.mongo.BcryptPasswordHasher
 import com.bank.banking.infra.mongo.MongoAccountRepository
 import com.bank.banking.infra.mongo.MongoBankingFactory
 import com.bank.banking.infra.mongo.MongoBootstrap
+import com.bank.banking.infra.mongo.MongoChatSessionRepository
 import com.bank.banking.infra.mongo.MongoCreditCardRepository
+import com.bank.banking.infra.mongo.MongoExpenseRepository
 import com.bank.banking.infra.mongo.MongoIdempotencyRepository
 import com.bank.banking.infra.mongo.MongoPaymentExecutionGateway
 import com.bank.banking.infra.mongo.MongoPaymentHistoryRepository
@@ -46,6 +53,8 @@ class BankingCompositionRoot(connectionString: String, databaseName: String = "b
     val idempotency = MongoIdempotencyRepository(db)
     val paymentGateway = MongoPaymentExecutionGateway(db)
     val paymentHistory = MongoPaymentHistoryRepository(db)
+    val chatSessions = MongoChatSessionRepository(db)
+    val expenses = MongoExpenseRepository(db)
 
     val loginUseCase = LoginUseCase(users, creds, hasher, sessions, tokens)
     val balanceUseCase = GetCurrentBalanceUseCase(sessions, accounts)
@@ -54,6 +63,8 @@ class BankingCompositionRoot(connectionString: String, databaseName: String = "b
     val userCardMovementsUseCase = ListUserCardMovementsUseCase(sessions, cards)
     val payUseCase = PayCreditCardUseCase(sessions, accounts, cards, idempotency, paymentGateway, tokens)
     val userPaymentsUseCase = ListUserPaymentsUseCase(sessions, paymentHistory)
+    val listChatHistoryUseCase = ListChatHistoryUseCase(sessions, chatSessions)
+    val monthlyExpensesUseCase = GetMonthlyExpensesByCategoryUseCase(sessions, expenses)
 
     private val intentClassifier = IntentClassifierFactory.createFromEnvironment()
     val routeChatMessageUseCase = RouteChatMessageUseCase(intentClassifier)
@@ -61,26 +72,36 @@ class BankingCompositionRoot(connectionString: String, databaseName: String = "b
     private val balanceUiBuilder = BalanceUiBuilder(balanceUseCase)
     private val payCreditCardUiBuilder = PayCreditCardUiBuilder(cardsWithDebtUseCase)
     private val clarificationUiBuilder = ClarificationUiBuilder()
+    private val greetingUiBuilder = GreetingUiBuilder(balanceUseCase)
     private val supportUiBuilder = SupportUiBuilder()
     private val notImplementedTransferUiBuilder = NotImplementedTransferUiBuilder()
+    private val chatHistoryUiBuilder = ChatHistoryUiBuilder(listChatHistoryUseCase)
+    private val monthlyExpensesUiBuilder = MonthlyExpensesUiBuilder(monthlyExpensesUseCase)
     private val chatUiBuilderFactory = ChatUiBuilderFactory(
         balance = balanceUiBuilder,
         payCard = payCreditCardUiBuilder,
+        chatHistory = chatHistoryUiBuilder,
+        monthlyExpenses = monthlyExpensesUiBuilder,
         support = supportUiBuilder,
         clarification = clarificationUiBuilder,
         notImplementedTransfer = notImplementedTransferUiBuilder,
     )
     val buildChatUiUseCase = BuildChatUiUseCase(
+        sessions = sessions,
+        chatSessions = chatSessions,
         routeChatMessage = routeChatMessageUseCase,
         builderFactory = chatUiBuilderFactory,
         clarificationBuilder = clarificationUiBuilder,
         supportBuilder = supportUiBuilder,
+        greetingBuilder = greetingUiBuilder,
     )
 
     fun bootstrapBlocking() {
         runBlocking {
             MongoBootstrap(db, hasher).run()
             sessions.ensureIndexes()
+            chatSessions.ensureIndexes()
+            expenses.ensureIndexes()
         }
     }
 }

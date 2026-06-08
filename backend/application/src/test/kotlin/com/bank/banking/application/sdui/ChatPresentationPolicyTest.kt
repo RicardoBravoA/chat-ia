@@ -31,6 +31,20 @@ class ChatPresentationPolicyTest {
         assertTrue(ChatPresentationPolicy.shouldShowSupport(c, "clima hoy"))
     }
 
+    @Test
+    fun `greeting message shows greeting card policy`() {
+        val c = classification(intent = IntentLabel.AMBIGUOUS, confidence = 0.3)
+        assertTrue(ChatPresentationPolicy.shouldShowGreeting(c, "hola"))
+        assertTrue(ChatPresentationPolicy.isGreetingOrHelpRequest("buenas tardes"))
+    }
+
+    @Test
+    fun `banking message is not treated as greeting`() {
+        val c = classification(intent = IntentLabel.PAY_CREDIT_CARD, confidence = 0.9)
+        assertFalse(ChatPresentationPolicy.shouldShowGreeting(c, "hola quiero pagar mi tarjeta"))
+        assertFalse(ChatPresentationPolicy.isGreetingOrHelpRequest("quiero pagar mi tarjeta"))
+    }
+
     private fun classification(intent: IntentLabel, confidence: Double) =
         IntentClassification(
             intent = intent,

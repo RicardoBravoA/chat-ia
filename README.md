@@ -10,12 +10,12 @@ Prioriza seguridad, auditabilidad y confiabilidad.
 |---------|--------------|---------------|
 | [`backend/`](backend/README.md) | API Ktor + MongoDB (dominio, aplicación, infraestructura, api). | `cd backend && ./gradlew :api:run` |
 | [`mobile/`](mobile/README.md) | App Compose Multiplatform (Android/iOS). | `cd mobile && ./gradlew :composeApp:installDebug` |
-| [`local/`](local/README.md) | Tooling Python: clasificador de intenciones, benchmarks y caché. | `source local/venv/bin/activate` |
+| [`local/`](local/README.md) | Woz: LLM local (Ollama), benchmarks y scripts de validación. | `ollama serve` + scripts en `local/README.md` |
 | [`docs/`](docs/) | Blueprints y runbooks de validación. | — |
 
 ## Puesta en marcha rápida
 
-Las tres partes son independientes. Para el flujo completo (móvil → backend → IA):
+Las partes son independientes, pero **el chat con IA (Woz) necesita Ollama** además de MongoDB y el backend.
 
 1. **MongoDB** (requerido por el backend):
 
@@ -23,7 +23,27 @@ Las tres partes son independientes. Para el flujo completo (móvil → backend �
    docker run -d --name banking-mongo -p 27017:27017 mongo:7
    ```
 
-2. **Backend** (desde `backend/`, necesita JDK 21):
+2. **Ollama + Woz** (requerido para clasificación IA en el chat):
+
+   ```bash
+   cd /ruta/a/ia
+
+   # macOS: instalador oficial (NO brew install ollama)
+   brew uninstall ollama 2>/dev/null || true
+   curl -fsSL https://ollama.com/install.sh | sh
+   # Si sale "Unable to find application named 'Ollama'" pero existe /Applications/Ollama.app → OK
+
+   open -a Ollama          # o: ollama serve   (dejar corriendo en otra terminal)
+   curl -s http://127.0.0.1:11434/            # debe decir "Ollama is running"
+
+   ollama pull qwen2.5:7b-instruct
+   python3 local/scripts/predict_intent_woz.py "paga mi tc"   # → PAY_CREDIT_CARD
+   ```
+
+   **Ya no hace falta:** venv Python, `pip install`, `train_intent_classifier.py`, ni `.joblib`.
+   Detalle y troubleshooting: [`local/README.md`](local/README.md).
+
+3. **Backend** (desde `backend/`, JDK 21):
 
    ```bash
    ./gradlew :api:run
@@ -32,26 +52,25 @@ Las tres partes son independientes. Para el flujo completo (móvil → backend �
    Disponible en `http://localhost:8080` (health: `GET /health`). Detalles y
    endpoints en [`backend/README.md`](backend/README.md).
 
-3. **App móvil** (desde `mobile/`, con el backend arriba):
+4. **App móvil** (desde `mobile/`, con MongoDB + backend + Ollama arriba):
+
+   **Android:**
 
    ```bash
-   ./gradlew :composeApp:installDebug
+   cd mobile && ./gradlew :composeApp:installDebug
    ```
 
-   Login demo: `demo@bank.com` / `Demo1234!`. Chat usa SDUI realtime (`WS /v1/chat/ws`).
-   Emulador Android: `http://10.0.2.2:8080`; iOS: `http://localhost:8080`.
-   Ver [`mobile/README.md`](mobile/README.md).
+   **iOS** (macOS + Xcode): configura `TEAM_ID` en `mobile/iosApp/Configuration/Config.xcconfig`, abre `mobile/iosApp/iosApp.xcodeproj` y Run (⌘R). Detalle en [`mobile/README.md`](mobile/README.md).
 
-4. **IA local** (desde la raíz del repo, clasificador de intenciones):
+   Login demo: `woz@bank.com` / `Demo1234!`. Chat usa SDUI realtime (`WS /v1/chat/ws`).
+   Emulador Android: `http://10.0.2.2:8080`; iOS simulador: `http://localhost:8080`.
+
+5. **Benchmarks Woz** (opcional, desde la raíz del repo):
 
    ```bash
-   source local/venv/bin/activate
-   python3 local/scripts/train_intent_classifier.py --eval
-   python3 local/scripts/simulate_local_chat.py
+   python3 local/scripts/simulate_intent_validation.py
+   python3 local/scripts/simulate_woz_chat.py
    ```
-
-   Guía completa de instalación, datasets y ciclo de entrenamiento en
-   [`local/README.md`](local/README.md).
 
 ## Desarrollo y contexto para agentes
 
@@ -63,6 +82,7 @@ Las tres partes son independientes. Para el flujo completo (móvil → backend �
 
 ## Documentación
 
+- [`docs/guia-arquitectura-proyecto-y-chat-ia.md`](docs/guia-arquitectura-proyecto-y-chat-ia.md) — visión general del repo, capas y flujo del chat IA (diagramas Mermaid).
 - [`docs/presentacion-negocio-chat-ia.md`](docs/presentacion-negocio-chat-ia.md) — presentación orientada a negocio (chat IA, SDUI, modelo local).
 - [`docs/presentacion-dev-chat-ia.md`](docs/presentacion-dev-chat-ia.md) — presentación para devs (entrenamiento nube/local, backend, SDUI).
 - [`docs/ai-chat-backend-blueprint.md`](docs/ai-chat-backend-blueprint.md) — diseño del chat IA sobre el backend.

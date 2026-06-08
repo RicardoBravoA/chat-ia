@@ -12,7 +12,10 @@ import org.junit.jupiter.api.assertThrows
 class RouteChatMessageUseCaseTest {
     @Test
     fun `blank message throws`() {
-        val uc = RouteChatMessageUseCase(IntentClassifierPort { error("unused") })
+        val uc = RouteChatMessageUseCase(object : IntentClassifierPort {
+            override suspend fun classify(message: String, history: List<com.bank.banking.domain.model.ChatHistoryMessage>) =
+                error("unused")
+        })
         assertThrows<BadRequestException> {
             runBlocking { uc.execute("   ") }
         }
@@ -21,8 +24,11 @@ class RouteChatMessageUseCaseTest {
     @Test
     fun `check balance intent maps to GET balance`() = runBlocking {
         val uc = RouteChatMessageUseCase(
-            IntentClassifierPort {
-                IntentClassification(
+            object : IntentClassifierPort {
+                override suspend fun classify(
+                    message: String,
+                    history: List<com.bank.banking.domain.model.ChatHistoryMessage>,
+                ) = IntentClassification(
                     intent = IntentLabel.CHECK_BALANCE,
                     confidence = 0.9,
                     entities = emptyMap(),

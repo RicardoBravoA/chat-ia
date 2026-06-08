@@ -105,7 +105,11 @@ data class ChatRouteResponse(
 )
 
 @Serializable
-data class ChatMessageRequest(val message: String)
+data class ChatMessageRequest(
+    val message: String,
+    val sessionId: String? = null,
+    val selectedIntent: String? = null,
+)
 
 @Serializable
 data class UiActionDto(
@@ -138,6 +142,7 @@ data class UiMetadataDto(
 data class ChatMessageResponse(
     val schemaVersion: Int,
     val correlationId: String,
+    val sessionId: String,
     val userMessage: String,
     val uiTree: UiNodeDto,
     val metadata: UiMetadataDto,
@@ -148,4 +153,36 @@ data class ChatWsEnvelope(
     val event: String,
     val response: ChatMessageResponse? = null,
     val error: ErrorResponse? = null,
+)
+
+@Serializable
+data class ChatHistoryItemDto(
+    val sessionId: String,
+    val turnCount: Int,
+    val lastUserMessage: String,
+    val lastIntent: String?,
+    val updatedAtEpochMs: Long,
+)
+
+@Serializable
+data class ChatHistoryResponse(
+    val sessions: List<ChatHistoryItemDto>,
+)
+
+@Serializable
+data class ExpenseCategorySummaryDto(
+    val categoryId: String,
+    val category: String,
+    val transactionCount: Int,
+    val totalAmount: Double,
+    val currency: String,
+)
+
+@Serializable
+data class MonthlyExpensesResponse(
+    val yearMonth: String,
+    val categories: List<ExpenseCategorySummaryDto>,
+    val totalTransactionCount: Int,
+    val grandTotal: Double,
+    val currency: String,
 )

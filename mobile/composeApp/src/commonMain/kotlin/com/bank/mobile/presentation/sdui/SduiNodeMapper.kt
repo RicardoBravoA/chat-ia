@@ -25,6 +25,8 @@ fun UiNode.toPayCardChatAction(): PayCardChatAction? {
 
 fun UiNode.propText(key: String): String = props[key].orEmpty()
 
+fun UiNode.propInt(key: String): Int? = props[key]?.toIntOrNull()
+
 fun UiNode.flattenForChat(): List<UiNode> =
     when (type) {
         UiComponentType.COLUMN -> children.flatMap { it.flattenForChat() }

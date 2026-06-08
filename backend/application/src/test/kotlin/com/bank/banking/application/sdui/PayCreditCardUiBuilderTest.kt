@@ -67,7 +67,7 @@ class PayCreditCardUiBuilderTest {
 
         val assistant = tree.children.single { it.type == UiComponentType.ASSISTANT_TEXT }
         assertNotNull(assistant.props["text"])
-        assertEquals("No tienes tarjetas con deuda pendiente.", assistant.props["text"])
+        assertEquals("Revisé tus tarjetas y no encontré deuda pendiente en este momento.", assistant.props["text"])
     }
 
     @Test

@@ -49,12 +49,15 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
             }
         }
         val androidMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-okhttp:2.3.12")
                 implementation("androidx.activity:activity-compose:1.9.2")
+                implementation("androidx.fragment:fragment-ktx:1.8.5")
+                implementation("androidx.biometric:biometric:1.1.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
             }
         }

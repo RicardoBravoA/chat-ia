@@ -62,6 +62,28 @@ object BackendRouteResolver {
                         description = "Transferencia a terceros — endpoint pendiente en este backend",
                     ),
                 )
+            IntentLabel.VIEW_CHAT_HISTORY ->
+                listOf(
+                    BackendRouteHint(
+                        method = "GET",
+                        pathTemplate = "/v1/me/chat/history",
+                        requiresAuth = true,
+                        requiresIdempotencyKey = false,
+                        implemented = true,
+                        description = "Listar sesiones de chat del usuario con el asistente",
+                    ),
+                )
+            IntentLabel.MONTHLY_EXPENSES ->
+                listOf(
+                    BackendRouteHint(
+                        method = "GET",
+                        pathTemplate = "/v1/me/expenses/by-category",
+                        requiresAuth = true,
+                        requiresIdempotencyKey = false,
+                        implemented = true,
+                        description = "Resumen de gastos por categoría en un mes (query yearMonth=YYYY-MM)",
+                    ),
+                )
             IntentLabel.AMBIGUOUS, IntentLabel.OUT_OF_SCOPE ->
                 emptyList()
         }

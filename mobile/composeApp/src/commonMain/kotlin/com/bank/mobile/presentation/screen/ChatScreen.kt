@@ -20,6 +20,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,7 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bank.mobile.domain.model.ChatBubble
@@ -57,6 +62,7 @@ fun ChatScreen(
     draft: String,
     onDraftChange: (String) -> Unit,
     onSend: () -> Unit,
+    onQuickReply: (label: String, selectedIntent: String) -> Unit = { _, _ -> },
     isSending: Boolean,
     onPayCard: (PayCardChatAction, CreditCardPaymentMode, Double?, Long) -> Unit = { _, _, _, _ -> },
     payingCardId: String? = null,
@@ -64,6 +70,17 @@ fun ChatScreen(
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+    val canSend = draft.isNotBlank() && !isSending
+
+    fun dismissKeyboardAndSend() {
+        if (!canSend) return
+        keyboardController?.hide()
+        focusManager.clearFocus()
+        onSend()
+    }
+
     LaunchedEffect(messages.size, isSending) {
         if (messages.isNotEmpty() || isSending) {
             val last = listState.layoutInfo.totalItemsCount - 1
@@ -109,7 +126,9 @@ fun ChatScreen(
                                 )
                             },
                             shape = RoundedCornerShape(26.dp),
-                            maxLines = 4,
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                            keyboardActions = KeyboardActions(onSend = { dismissKeyboardAndSend() }),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedContainerColor = Color.White,
                                 unfocusedContainerColor = Color.White,
@@ -118,7 +137,6 @@ fun ChatScreen(
                             ),
                         )
                         Spacer(Modifier.size(10.dp))
-                        val canSend = draft.isNotBlank() && !isSending
                         Box(
                             modifier = Modifier
                                 .size(48.dp)
@@ -127,7 +145,7 @@ fun ChatScreen(
                                     if (canSend) AppPalette.LoginPrimaryOrange
                                     else AppPalette.LoginPrimaryOrange.copy(alpha = 0.38f),
                                 )
-                                .clickable(enabled = canSend, onClick = onSend),
+                                .clickable(enabled = canSend, onClick = ::dismissKeyboardAndSend),
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
@@ -174,6 +192,7 @@ fun ChatScreen(
                                         paidCardIds = msg.paidCardIds,
                                         sduiMessageKey = msg.timestampEpochMs,
                                         onPayCard = onPayCard,
+                                        onQuickReply = onQuickReply,
                                     )
                                 }
                                 else -> {

@@ -8,4 +8,7 @@ internal object Collections {
     const val CARD_MOVEMENTS = "card_movements"
     const val CARD_PAYMENTS = "card_payments"
     const val IDEMPOTENCY = "idempotency"
+    const val CHAT_SESSIONS = "chat_sessions"
+    const val EXPENSE_CATEGORIES = "expense_categories"
+    const val CATEGORIZED_EXPENSES = "categorized_expenses"
 }

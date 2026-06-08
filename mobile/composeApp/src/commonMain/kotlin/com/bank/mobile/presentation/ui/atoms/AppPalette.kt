@@ -39,4 +39,6 @@ object AppPalette {
     /** Fondo del recuadro del icono en cada movimiento. */
     val HomeMovementIconBox = Color(0xFFE8EEF5)
     val HomeAmountExpense = Color(0xFF0F172A)
+
+    val ErrorRed = Color(0xFFDC2626)
 }

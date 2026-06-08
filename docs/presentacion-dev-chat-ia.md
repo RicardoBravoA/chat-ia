@@ -1,9 +1,11 @@
 # Presentación para desarrolladores
-## Chat bancario, clasificador local y ciclo cloud → producción
+## Chat bancario, Woz (LLM local) y SDUI
 
-**Audiencia:** backend, mobile, onboarding al repo — **no hace falta saber ML/IA** (slide 3 = glosario)  
+> **Actualización (2026):** producción usa **Woz** (Ollama), no TF-IDF/`.joblib`. Slides con sklearn = histórico.
+
+**Audiencia:** backend, mobile, onboarding al repo  
 **Duración sugerida:** 30–40 minutos  
-**Mensaje central:** El chat en producción **no es ChatGPT**: es un **clasificador pequeño** en el servidor (archivo `.joblib`), **sin cobro por mensaje**. La **nube** solo ayuda a **mejorar los ejemplos de entrenamiento** en desarrollo.
+**Mensaje central:** El chat usa **Woz** — copiloto con LLM **local** (sin tokens cloud). JSONL = benchmarks. SDUI + backend = datos y pagos reales.
 
 **Documentación de referencia:** [`local/README.md`](../local/README.md) · [`docs/intent-routing-contract.md`](intent-routing-contract.md) · [`docs/server-driven-ui-blueprint.md`](server-driven-ui-blueprint.md)
 
@@ -15,7 +17,7 @@
 
 `mobile/` · `backend/` · `local/` · SDUI · WebSocket
 
-*Entrenamiento en nube (dev) · Inferencia local (prod)*
+*Woz (Ollama) en producción · benchmarks en `local/`*
 
 ---
 
@@ -25,7 +27,7 @@
 |---------|-------|-----------------|
 | [`mobile/`](../mobile/) | KMP + Compose Multiplatform | UI, `SduiRenderer`, pagos con idempotency |
 | [`backend/`](../backend/) | Kotlin JVM 21, Ktor, MongoDB | API, `BuildChatUiUseCase`, clasificador en runtime |
-| [`local/`](../local/) | Python, scikit-learn | Datasets, entrenamiento, benchmarks, eval LLM |
+| [`local/`](../local/) | Python + Ollama | Benchmarks Woz, `intent_heuristic.json` (fallback JVM) |
 | [`docs/`](../docs/) | Markdown | Contratos, blueprints, esta presentación |
 
 **Flujo principal del chat:** mobile → `WS /v1/chat/ws` → clasificar intención → armar `uiTree` (SDUI) → mobile renderiza → pago vía `POST /v1/credit-cards/{id}/payments`.
@@ -466,24 +468,18 @@ Tests: `commonTest/.../sdui/SduiNodeMapperTest.kt`, ViewModel tests de flujos tr
 ## Slide 15 — Cheatsheet de comandos
 
 ```bash
-# Setup
-cd ia && python3 -m venv local/venv && source local/venv/bin/activate
-pip install -r local/requirements.txt
+# Ollama + Woz (desde raíz ia/)
+ollama pull qwen2.5:7b-instruct
+python3 local/scripts/predict_intent_woz.py "paga mi tc"
 
-# Entrenamiento local
-python3 local/scripts/train_intent_classifier.py --eval
-
-# Evaluación nube (dev)
-export ANTHROPIC_API_KEY="..."
-python3 local/scripts/intent_eval.py --provider anthropic --version v1
-python3 local/scripts/learn_until_pass.py --provider anthropic --session learn-1
-
-# Fusionar + entrenar (opcional LLM previo)
-python3 local/scripts/finalize_intent_training.py --with-llm
-
-# Validación pre-merge
+# Validación pre-merge (requiere Ollama)
 python3 local/scripts/simulate_intent_validation.py
 python3 local/scripts/simulate_dialogue_validation.py
+python3 local/scripts/intent_eval.py --provider woz --version woz-v1
+
+# Eval cloud opcional (dev)
+export ANTHROPIC_API_KEY="..."
+python3 local/scripts/intent_eval.py --provider anthropic --version v1
 
 # Backend + mobile
 cd backend && ./gradlew :api:run
@@ -492,14 +488,16 @@ cd backend && ./gradlew test
 cd mobile && ./gradlew :composeApp:testDebugUnitTest
 ```
 
+Ver [`local/README.md`](../local/README.md).
+
 ---
 
 ## Slide 16 — Checklist antes de merge
 
 - [ ] Labels alineados: Kotlin enum ↔ JSONL ↔ `intent_heuristic.json`
-- [ ] `train_intent_classifier.py --eval` con métricas aceptables
-- [ ] `simulate_intent_validation.py` exit 0
+- [ ] `simulate_intent_validation.py` exit 0 (Ollama en marcha)
 - [ ] `simulate_dialogue_validation.py` exit 0 (si tocaste diálogo)
+- [ ] `intent_eval.py --provider woz` pasa promotion gate (opcional pero recomendado)
 - [ ] Backend tests en `application/src/test/.../sdui/` si cambiaste builders
 - [ ] Mobile tests SDUI si añadiste `type` al catálogo
 - [ ] Actualizar [`docs/intent-routing-contract.md`](intent-routing-contract.md) si cambiaron umbrales o mapeos
@@ -509,17 +507,17 @@ Matriz completa: [`docs/testing-matrix.md`](testing-matrix.md)
 
 ---
 
-## Slide 17 — ¿Se puede usar un LLM local (como Claude/GPT en la nube)?
+## Slide 17 — Clasificador local: Woz (Ollama)
 
-**Respuesta corta:** **sí, es posible técnicamente**, pero **este repo no lo usa hoy** en el chat de producción. Elegimos un clasificador clásico porque el trabajo es **elegir entre 6 intenciones**, no mantener una conversación abierta.
+**Estado actual:** el chat en producción usa **Woz** — LLM local vía Ollama (`qwen2.5:7b-instruct` por defecto), no sklearn ni `.joblib`.
 
-### Qué tenemos hoy
+| Entorno | Tecnología | Rol |
+|---------|------------|-----|
+| **Producción** | Woz + Ollama | Clasificación de intenciones en runtime |
+| **Fallback** | `intent_heuristic.json` (JVM) | Si Woz falla o baja confianza (`INTENT_ROUTER_MODE=auto`) |
+| **Dev opcional** | `intent_eval.py --provider anthropic\|openai` | Comparar contra benchmark fijo |
 
-| Entorno | Tecnología | ¿LLM? |
-|---------|------------|-------|
-| **Nube (dev)** | Claude `claude-sonnet-4-6` o GPT `gpt-4o-mini` | **Sí** — evaluación y enriquecimiento de datos |
-| **Local (prod)** | TF-IDF + LinearSVC → `.joblib` | **No** — clasificador por palabras/patrones |
-| **Local opcional (no cableado al chat)** | `sentence-transformers` (embeddings) | **No es chat** — vectores semánticos + clasificador |
+Slides anteriores que mencionan TF-IDF, `.joblib`, `train_intent_classifier.py` o `learn_until_pass.py` son **históricas** (pipeline sklearn retirado).
 
 ### Opciones si quisiéramos IA “grande” en local
 

@@ -6,7 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class LoginUiState(
-    val email: String = "demo@bank.com",
+    val email: String = "woz@bank.com",
     val password: String = "Demo1234!",
     val error: String? = null,
     val loading: Boolean = false,
@@ -46,7 +45,6 @@ class LoginViewModel(
         if (current.loading) return
         scope.launch {
             _state.updateOnMain { it.copy(loading = true, error = null) }
-            delay(FRAME_DELAY_MS)
             try {
                 val token = loginUseCase(current.email, current.password)
                 authSession.signIn(token)
@@ -60,5 +58,3 @@ class LoginViewModel(
         }
     }
 }
-
-private const val FRAME_DELAY_MS = 32L

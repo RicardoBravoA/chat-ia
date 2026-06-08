@@ -25,7 +25,7 @@ El **chat bancario** usa SDUI: el backend arma `uiTree` (JSON); mobile **solo re
 
 ## Catálogo v1 (sync backend ↔ mobile)
 
-`Column`, `AssistantText`, `BalanceCard`, `PayCardPanel`, `SupportChannelsCard`, `InfoBanner`
+`Column`, `AssistantText`, `BalanceCard`, `PayCardPanel`, `SupportChannelsCard`, `InfoBanner`, `GreetingCard`
 
 Nuevo `type` → Composable + test en ambos lados.
 

@@ -12,13 +12,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 
 data class HomeUiState(
     val balanceLabel: String = "--",
@@ -51,8 +49,6 @@ class HomeViewModel(
             _state.updateOnMain {
                 it.copy(movementsLoading = true, movementsError = null)
             }
-            delay(FRAME_DELAY_MS)
-            yield()
             val (balanceResult, movementsResult) = fetchHomeSnapshot(token)
             balanceResult.onSuccess { balance: Balance ->
                 _state.updateOnMain {
@@ -91,5 +87,3 @@ class HomeViewModel(
         balanceDeferred.await() to movementsDeferred.await()
     }
 }
-
-private const val FRAME_DELAY_MS = 32L

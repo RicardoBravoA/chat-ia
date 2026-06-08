@@ -26,6 +26,8 @@ docker run -d --name banking-mongo -p 27017:27017 mongo:7
 
 ## Ejecutar el servidor
 
+**Requisitos para chat con IA:** MongoDB + **Ollama** con el modelo Woz (ver abajo).
+
 Desde `backend/`:
 
 ```bash
@@ -47,20 +49,35 @@ Desde `backend/`:
 
 Canal WebSocket para chat SDUI en tiempo real:
 
-- Cliente envía `ChatMessageRequest` JSON (`{"message":"..."}`).
-- Backend responde `ChatWsEnvelope` con `event = "chat_response"` y `response` (`ChatMessageResponse` con `uiTree`).
+- Cliente envía `ChatMessageRequest` JSON (`{"message":"...","sessionId":"..."}`). Si `sessionId` es `null` u omitido, el backend crea una sesión nueva.
+- Chips `QUICK_REPLY` del `GreetingCard` pueden enviar `selectedIntent` (`CHECK_BALANCE`, `PAY_CREDIT_CARD`, `MONTHLY_EXPENSES`, `VIEW_CHAT_HISTORY`, `TRANSFER_OWN_ACCOUNTS`); el backend **omite Woz** solo para esos intents servidos en el saludo.
+- Backend responde `ChatWsEnvelope` con `event = "chat_response"` y `response` (`ChatMessageResponse` con `uiTree` y `sessionId`).
+- Las sesiones se persisten en MongoDB (`chat_sessions`); los últimos **6** turnos se envían a Woz como JSON compacto (`intent`, `entities`, `confidence`, `reason`, `source`).
+- Copy conversacional **grounded** (`GroundedChatCopy`): textos naturales en SDUI usando solo datos reales del backend (saldo, deuda, alias, **nickname** en saludo).
 - Errores de payload/ejecución devuelven `event = "chat_error"` + `error`.
-- Simulación de latencia de bot: delay aleatorio entre **1 y 3 segundos** por mensaje.
 
-### Router de intenciones (`POST /v1/chat/route`, legacy)
+### Router de intenciones — Woz (`POST /v1/chat/route`, legacy)
 
-Clasificación + `suggestedActions` (sin `uiTree`). Usado por eval de intents en `local/`. Variables del clasificador (ver
-[`local/README.md`](../local/README.md)):
+Clasificación vía **Woz** (LLM local Ollama) + fallback heurístico JVM. Variables:
 
-- `INTENT_ROUTER_MODE`: `auto` \| `python` \| `heuristic`.
-- `REPO_ROOT`: raíz del repo para localizar el modelo y `intent_heuristic.json`.
-- `PYTHON_BIN`: intérprete para `local/scripts/predict_intent.py`.
-- `INTENT_HEURISTIC_CONFIG` (opcional): ruta absoluta al JSON heurístico.
+| Variable | Default | Descripción |
+|----------|---------|-------------|
+| `INTENT_ROUTER_MODE` | `auto` | `auto` \| `woz` \| `heuristic` |
+| `WOZ_OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Base de Ollama |
+| `WOZ_MODEL` | `qwen2.5:7b-instruct` | Modelo Ollama |
+| `WOZ_TIMEOUT_SECONDS` | `60` | Timeout HTTP a Ollama |
+| `WOZ_MIN_CONFIDENCE_FOR_ACCEPT` | `0.55` | En `auto`, si Woz baja de este umbral → heurística |
+| `INTENT_HEURISTIC_CONFIG` | (opcional) | Ruta absoluta al JSON heurístico |
+| `REPO_ROOT` | (opcional) | Raíz del repo para localizar `local/config/intent_heuristic.json` |
+
+Modo `auto`: Woz primero; si falla Ollama, baja confianza o `AMBIGUOUS` → heurística.
+
+**Ollama debe estar en marcha** con el modelo Woz. En macOS usa el **instalador oficial** (`curl -fsSL https://ollama.com/install.sh | sh`), no Homebrew 0.30+ (falta `llama-server` para qwen2.5). Ver [`local/README.md`](../local/README.md).
+
+```bash
+ollama pull qwen2.5:7b-instruct
+python3 local/scripts/predict_intent_woz.py "paga mi tc"
+```
 
 Si no encuentra el JSON heurístico, el proceso falla al arrancar: lanza Gradle
 desde `backend/` o define `REPO_ROOT`.
@@ -73,6 +90,8 @@ desde `backend/` o define `REPO_ROOT`.
 | `POST` | `/chat/route` | Sí | Clasificación de intención (legacy) |
 | `WS` | `/chat/ws` | Sí | **Realtime chat SDUI** (`ChatWsEnvelope`) |
 | `GET` | `/me/balance` | Bearer | Saldo de la cuenta del usuario. |
+| `GET` | `/me/chat/history` | Bearer | Sesiones de chat del usuario (historial IA). |
+| `GET` | `/me/expenses/by-category` | Bearer | Gastos por categoría (`?yearMonth=YYYY-MM`, default mes actual). |
 | `GET` | `/me/movements` | Bearer | Movimientos de las tarjetas del usuario. |
 | `GET` | `/payments` | Bearer | Historial de pagos (orden descendente). |
 | `GET` | `/credit-cards/with-debt` | Bearer | Tarjetas con deuda (`204` si no hay). |

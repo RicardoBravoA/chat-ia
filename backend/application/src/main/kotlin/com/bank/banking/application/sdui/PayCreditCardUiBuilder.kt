@@ -12,14 +12,17 @@ class PayCreditCardUiBuilder(
         if (cards.isEmpty()) {
             return SduiNodeFactory.column(
                 "pay-empty",
-                SduiNodeFactory.assistantText("pay-empty-text", "No tienes tarjetas con deuda pendiente."),
+                SduiNodeFactory.assistantText(
+                    "pay-empty-text",
+                    GroundedChatCopy.payCardsEmpty(),
+                ),
             )
         }
         return SduiNodeFactory.column(
             "pay-root",
             SduiNodeFactory.assistantText(
                 "pay-intro",
-                "Estas son tus tarjetas con deuda. Elige tarjeta y modo de pago.",
+                GroundedChatCopy.payCardsIntro(cards, ctx.classification.entities),
             ),
             *cards.mapIndexed { index, card -> card.toPayCardPanelNode("pay-card-$index") }.toTypedArray(),
         )

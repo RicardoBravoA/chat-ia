@@ -40,6 +40,7 @@ internal fun UiResponse.toResponse(): ChatMessageResponse =
     ChatMessageResponse(
         schemaVersion = schemaVersion,
         correlationId = correlationId,
+        sessionId = sessionId,
         userMessage = userMessage,
         uiTree = uiTree.toDto(),
         metadata = metadata.toDto(),

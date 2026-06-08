@@ -40,6 +40,62 @@ internal object SduiNodeFactory {
             props = mapOf("text" to text),
         )
 
+    fun greetingCard(
+        id: String,
+        message: String,
+        quickReplies: List<GreetingQuickReply>,
+    ): UiNode =
+        UiNode(
+            id = id,
+            type = UiComponentType.GREETING_CARD,
+            props = mapOf("message" to message),
+            actions = quickReplies.mapIndexed { index, reply ->
+                UiAction(
+                    id = "quick-reply-$index",
+                    label = reply.label,
+                    actionType = "QUICK_REPLY",
+                    payload = mapOf("intent" to reply.intent.name),
+                    requiresConfirmation = false,
+                )
+            },
+        )
+
+    fun chatHistoryRow(
+        id: String,
+        sessionLabel: String,
+        lastMessage: String,
+        turnCount: Int,
+        timeLabel: String,
+        lastIntent: String,
+    ): UiNode =
+        UiNode(
+            id = id,
+            type = UiComponentType.CHAT_HISTORY_ROW,
+            props = mapOf(
+                "sessionLabel" to sessionLabel,
+                "lastMessage" to lastMessage,
+                "turnCount" to turnCount.toString(),
+                "timeLabel" to timeLabel,
+                "lastIntent" to lastIntent,
+            ),
+        )
+
+    fun spendingCategoryRow(
+        id: String,
+        category: String,
+        transactionCount: Int,
+        totalAmountFormatted: String,
+    ): UiNode =
+        UiNode(
+            id = id,
+            type = UiComponentType.SPENDING_CATEGORY_ROW,
+            props = mapOf(
+                "category" to category,
+                "transactionCount" to transactionCount.toString(),
+                "totalAmountFormatted" to totalAmountFormatted,
+            ),
+        )
+
     fun payCardAction(cardId: String, paymentMode: String): UiAction =
         UiAction(
             id = "pay-$cardId-$paymentMode",
