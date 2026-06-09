@@ -60,7 +60,8 @@ Ver: `.cursor/rules/20-backend-architecture.mdc`, `.cursor/rules/25-backend-api-
 - **Ollama en marcha** antes de probar chat o benchmarks: `ollama serve` + `ollama pull qwen2.5:7b-instruct`.
 - **Comandos desde la raíz del repo:** `python3 local/scripts/...`
 - **Validar Woz:** `simulate_intent_validation.py`, `intent_eval.py --provider woz` (Ollama en marcha).
-- **No sustituir backend** — Woz clasifica intención; use cases ejecutan operaciones bancarias.
+- **Router `auto`:** heurística fast path → Woz → heurística (`CascadeIntentClassifier`). Ver `docs/intent-routing-contract.md`.
+- **No sustituir backend** — clasificadores solo etiquetan intención; use cases ejecutan operaciones bancarias.
 
 Ver: `.cursor/rules/55-local-ai-tooling.mdc`, `docs/intent-routing-contract.md`.
 

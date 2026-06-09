@@ -5,7 +5,10 @@ import com.bank.banking.domain.model.IntentClassification
 import com.bank.banking.domain.port.IntentClassifierPort
 
 /**
- * Intenta el clasificador primario (p. ej. Python); si falla, usa el respaldo heurístico.
+ * Intenta el clasificador primario; si falla o el resultado no es aceptable, usa el respaldo.
+ *
+ * Modo `auto` usa [CascadeIntentClassifier] (heurística → Woz → heurística); esta clase queda
+ * disponible para composiciones puntuales o tests.
  */
 class FallbackIntentClassifier(
     private val primary: IntentClassifierPort,

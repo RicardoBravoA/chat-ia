@@ -15,7 +15,7 @@ Prioriza seguridad, auditabilidad y confiabilidad.
 
 ## Puesta en marcha rápida
 
-Las partes son independientes, pero **el chat con IA (Woz) necesita Ollama** además de MongoDB y el backend.
+Las partes son independientes. El backend arranca sin Ollama; en modo `auto` (default) las frases cubiertas por `local/config/intent_heuristic.json` **no requieren LLM**. Ollama sigue siendo necesario para mensajes ambiguos, follow-ups y benchmarks Woz.
 
 1. **MongoDB** (requerido por el backend):
 
@@ -23,7 +23,7 @@ Las partes son independientes, pero **el chat con IA (Woz) necesita Ollama** ade
    docker run -d --name banking-mongo -p 27017:27017 mongo:7
    ```
 
-2. **Ollama + Woz** (requerido para clasificación IA en el chat):
+2. **Ollama + Woz** (para mensajes que la heurística no resuelve y para benchmarks):
 
    ```bash
    cd /ruta/a/ia

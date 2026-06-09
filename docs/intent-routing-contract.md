@@ -81,11 +81,65 @@ no simular éxito de transferencia.
 | OUT_OF_SCOPE recheck | `ChatPresentationPolicy.kt` | Re-check si `confidence < 0.8` y texto parece bancario |
 | Local simulador | `simulate_woz_chat.py` | `ASK_CLARIFICATION` si `confidence < 0.55` |
 | Backend heurístico | `HeuristicIntentClassifier.kt` | Reglas JSON + `BankingIntentKeywordResolver` si sigue `AMBIGUOUS` (p. ej. "pagando mi tc", saludo + operación) |
-| Backend auto fallback | `IntentClassifierFactory.kt` | Fallback a heurística si confianza baja (~0.75) |
+| Backend auto — fast path | `HeuristicFastPathPolicy.kt` | Heurística aceptada sin LLM si `intent != AMBIGUOUS`, `!clarificationNeeded` y `confidence >= 0.85` (`INTENT_HEURISTIC_FAST_PATH_MIN_CONFIDENCE`) |
+| Backend auto — fallback Woz | `CascadeIntentClassifier.kt` | Tras Woz: heurística si confianza `< 0.55`, `AMBIGUOUS` o `clarificationNeeded` (`WOZ_MIN_CONFIDENCE_FOR_ACCEPT`) |
 | Promotion LLM eval | `local/config/thresholds.json` | `minIntentAccuracyGlobal: 0.9`, etc. |
 
 **Objetivo:** converger umbrales de clarificación en un solo config compartido o documentar
 explícitamente por qué difieren (p. ej. mobile más conservador en UI).
+
+## Cascade heurística + LLM (modo `auto`)
+
+En modo `auto`, el backend usa **`CascadeIntentClassifier`**: decide la intención en tres pasos antes de armar SDUI.
+
+```mermaid
+flowchart TD
+    A[Mensaje del usuario] --> B[Heurística JVM<br/>intent_heuristic.json]
+    B --> C{¿Match satisfactorio?<br/>intent claro + conf ≥ 0.85}
+    C -->|Sí| D[Usar intent heurístico<br/>source: heuristic<br/>Sin llamar a Ollama]
+    C -->|No| E[Woz — LLM local Ollama<br/>con historial de sesión]
+    E --> F{¿Woz OK?<br/>conf ≥ 0.55, no AMBIGUOUS}
+    F -->|Sí| G[Usar intent Woz<br/>source: woz]
+    F -->|No / error HTTP| H[Heurística otra vez<br/>source: heuristic]
+    D --> I[BuildChatUiUseCase<br/>builder SDUI + datos MongoDB]
+    G --> I
+    H --> I
+```
+
+### Qué es un match heurístico “satisfactorio” (fast path)
+
+La heurística **no genera la respuesta visual**; solo etiqueta la intención. Se considera suficiente para **omitir Ollama** cuando:
+
+1. `intent != AMBIGUOUS`
+2. `clarificationNeeded == false` (regla interna heurística: confianza ≥ 0.65 y intent claro)
+3. `confidence >= INTENT_HEURISTIC_FAST_PATH_MIN_CONFIDENCE` (default **0.85**)
+
+Ejemplo: *"ver mi saldo"* → regla `CHECK_BALANCE` con confianza 0.92 → respuesta SDUI de saldo **sin** invocar el LLM.
+
+Ejemplo: *"paga 50"* sin contexto → heurística `AMBIGUOUS` → **sí** invoca Woz (necesita historial).
+
+### Cuándo entra Woz
+
+- La heurística no matcheó con confianza suficiente.
+- Mensajes cortos o follow-ups donde las reglas JSON no alcanzan.
+
+Woz recibe el mensaje + hasta **6 turnos** previos (JSON compacto con intent/entities del asistente).
+
+### Cuándo vuelve la heurística (tras Woz)
+
+- Ollama caído, timeout o JSON inválido.
+- Woz devuelve `AMBIGUOUS`, `clarificationNeeded` o `confidence < WOZ_MIN_CONFIDENCE_FOR_ACCEPT` (default 0.55).
+
+### Mejorar cobertura heurística
+
+Ampliar `local/config/intent_heuristic.json` aumenta cuántos mensajes resuelve el **fast path** (más rápido, menos dependencia de Ollama). Ver `local/datasets/intents/README.md`.
+
+### Excepciones que omiten clasificadores
+
+- **Quick reply** del `GreetingCard` (`selectedIntent` permitido): intención fijada por servidor (`source: quick_reply`), sin heurística ni Woz.
+- Modos forzados: `INTENT_ROUTER_MODE=woz` (solo LLM) o `heuristic` (solo JSON).
+
+Tras clasificar, **`BuildChatUiUseCase`** + builders SDUI consultan MongoDB y arman `uiTree`. Ni heurística ni LLM ejecutan pagos ni inventan saldos.
 
 ## Next actions (simulador local / dialogue eval)
 
@@ -118,12 +172,20 @@ Variable `INTENT_ROUTER_MODE`:
 
 | Modo | Comportamiento |
 |------|----------------|
-| `auto` (default) | **Woz** (Ollama local) con fallback heurístico JVM |
+| `auto` (default) | **Cascade**: heurística (fast path) → Woz → heurística si Woz falla o duda. Ver sección [Cascade heurística + LLM](#cascade-heurística--llm-modo-auto). |
 | `woz` | Solo Woz (`WozIntentClassifier`) |
 | `heuristic` | Solo `local/config/intent_heuristic.json` |
 
-Variables Woz: `WOZ_OLLAMA_BASE_URL`, `WOZ_MODEL`, `WOZ_TIMEOUT_SECONDS`, `WOZ_MIN_CONFIDENCE_FOR_ACCEPT`.
+Variables:
 
-Requisito: **Ollama en marcha** con el modelo indicado (ver `local/README.md`).
+| Variable | Default | Uso |
+|----------|---------|-----|
+| `WOZ_OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Base Ollama |
+| `WOZ_MODEL` | `qwen2.5:7b-instruct` | Modelo |
+| `WOZ_TIMEOUT_SECONDS` | `60` | Timeout HTTP |
+| `WOZ_MIN_CONFIDENCE_FOR_ACCEPT` | `0.55` | Tras Woz en `auto`: si baja → heurística |
+| `INTENT_HEURISTIC_FAST_PATH_MIN_CONFIDENCE` | `0.85` | En `auto`: heurística aceptada sin LLM |
 
-Metadata SDUI: `routerSource` = `woz` \| `heuristic`.
+Requisito para Woz: **Ollama en marcha** con el modelo indicado (ver `local/README.md`). En `auto`, frases cubiertas por el JSON heurístico **no requieren** Ollama.
+
+Metadata SDUI: `routerSource` = `woz` \| `heuristic` \| `quick_reply`.

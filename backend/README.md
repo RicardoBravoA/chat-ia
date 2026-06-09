@@ -66,13 +66,14 @@ Clasificación vía **Woz** (LLM local Ollama) + fallback heurístico JVM. Varia
 | `WOZ_OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Base de Ollama |
 | `WOZ_MODEL` | `qwen2.5:7b-instruct` | Modelo Ollama |
 | `WOZ_TIMEOUT_SECONDS` | `60` | Timeout HTTP a Ollama |
-| `WOZ_MIN_CONFIDENCE_FOR_ACCEPT` | `0.55` | En `auto`, si Woz baja de este umbral → heurística |
+| `WOZ_MIN_CONFIDENCE_FOR_ACCEPT` | `0.55` | En `auto`, tras Woz: si baja de este umbral → heurística |
+| `INTENT_HEURISTIC_FAST_PATH_MIN_CONFIDENCE` | `0.85` | En `auto`, heurística aceptada sin LLM si supera este umbral |
 | `INTENT_HEURISTIC_CONFIG` | (opcional) | Ruta absoluta al JSON heurístico |
 | `REPO_ROOT` | (opcional) | Raíz del repo para localizar `local/config/intent_heuristic.json` |
 
-Modo `auto`: Woz primero; si falla Ollama, baja confianza o `AMBIGUOUS` → heurística.
+Modo `auto` (**cascade**): heurística primero (fast path si match claro) → Woz si no → heurística otra vez si Woz falla o duda. Detalle: [`docs/intent-routing-contract.md`](../docs/intent-routing-contract.md#cascade-heurística--llm-modo-auto).
 
-**Ollama debe estar en marcha** con el modelo Woz. En macOS usa el **instalador oficial** (`curl -fsSL https://ollama.com/install.sh | sh`), no Homebrew 0.30+ (falta `llama-server` para qwen2.5). Ver [`local/README.md`](../local/README.md).
+**Ollama** hace falta para mensajes que la heurística no resuelve con confianza ≥ fast path. En frases típicas cubiertas por `intent_heuristic.json`, el chat responde sin llamar al LLM. Instalación: [`local/README.md`](../local/README.md).
 
 ```bash
 ollama pull qwen2.5:7b-instruct

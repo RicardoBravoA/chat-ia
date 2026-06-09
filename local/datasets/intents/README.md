@@ -23,7 +23,17 @@ Objetivo: **validar y mejorar** el router **Woz** (LLM local vía Ollama) de for
   simulate_*_validation.py  →  ¿error? → chat_errors.jsonl → commit
               ↓
   Ajustar WozPrompt.kt / woz_client.py / intent_heuristic.json
+              ↓
+  Ampliar intent_heuristic.json → más fast path sin Ollama (modo auto)
 ```
+
+## Router en modo `auto` (backend)
+
+1. **Heurística** (`intent_heuristic.json`) — si match claro (conf ≥ `INTENT_HEURISTIC_FAST_PATH_MIN_CONFIDENCE`, default 0.85) → intención sin LLM.
+2. **Woz (Ollama)** — si la heurística no resolvió; usa historial de sesión.
+3. **Heurística otra vez** — si Woz falla o tiene baja confianza.
+
+Contrato completo: [`docs/intent-routing-contract.md`](../../docs/intent-routing-contract.md#cascade-heurística--llm-modo-auto).
 
 ## Archivos en Git
 
@@ -43,7 +53,7 @@ Intenciones válidas: `CHECK_BALANCE`, `PAY_CREDIT_CARD`, `TRANSFER_OWN_ACCOUNTS
 3. Re-ejecuta `simulate_intent_validation.py`.
 4. Si persiste, ajusta el system prompt en `woz_client.py` / `WozPrompt.kt`, `intent_heuristic.json` (fallback JVM) o el modelo (`WOZ_MODEL`).
 
-La heurística JVM (`local/config/intent_heuristic.json`) actúa como **fallback** si Woz falla o tiene baja confianza (`INTENT_ROUTER_MODE=auto`).
+La heurística JVM (`local/config/intent_heuristic.json`) es el **primer paso** en `auto` (fast path) y **fallback** si Woz falla o tiene baja confianza. Ampliar el JSON acelera respuestas en frases típicas sin depender de Ollama.
 
 ## Formato JSONL
 

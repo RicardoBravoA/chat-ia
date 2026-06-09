@@ -142,15 +142,15 @@ local/
 
 | Componente | Archivo / servicio |
 |------------|-------------------|
-| Clasificador primario | **Ollama** + variables `WOZ_*` |
-| Fallback backend | `config/intent_heuristic.json` |
+| Clasificador primario (modo `auto`) | **Heurística JVM** fast path → **Ollama/Woz** si no hay match claro |
+| Fallback backend | `config/intent_heuristic.json` (también tras fallo/duda de Woz) |
 | Python en runtime | **No** — solo para benchmarks en dev |
 
 ## Relación con el backend
 
-- Chat SDUI: `WS /v1/chat/ws` → `BuildChatUiUseCase` → **Woz** (`WozIntentClassifier`) + fallback heurístico.
+- Chat SDUI: `WS /v1/chat/ws` → `BuildChatUiUseCase` → **cascade** heurística → Woz → heurística (`CascadeIntentClassifier` en modo `auto`).
 - Legacy: `POST /v1/chat/route` (solo clasificación).
-- Variables router: `INTENT_ROUTER_MODE` (`auto` \| `woz` \| `heuristic`).
+- Variables router: `INTENT_ROUTER_MODE` (`auto` \| `woz` \| `heuristic`), `INTENT_HEURISTIC_FAST_PATH_MIN_CONFIDENCE`, `WOZ_*`.
 
 Woz **no ejecuta pagos** ni consulta saldos: solo clasifica. Montos y SDUI vienen de use cases + MongoDB.
 

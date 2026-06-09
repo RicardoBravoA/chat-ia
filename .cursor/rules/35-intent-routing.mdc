@@ -18,7 +18,7 @@ Sync across: `IntentLabel.kt`, JSONL datasets, `intent_heuristic.json`.
 
 | Layer | Owns |
 |-------|------|
-| `api/intent/` (Woz + heuristic) | Classification |
+| `api/intent/` (`CascadeIntentClassifier`, Woz, heuristic) | Classification — modo `auto`: heurística → Woz → heurística |
 | `local/scripts/woz_client.py` | Ollama client for benchmarks |
 | `BackendRouteResolver` | Intent → API route hints |
 | `ChatPresentationPolicy` (backend SDUI) | Clarification, out-of-scope, support UI |

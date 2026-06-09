@@ -1,7 +1,5 @@
 package com.bank.banking.api.intent
 
-import com.bank.banking.domain.model.IntentClassification
-import com.bank.banking.domain.model.IntentLabel
 import com.bank.banking.domain.port.IntentClassifierPort
 
 object IntentClassifierFactory {
@@ -11,6 +9,7 @@ object IntentClassifierFactory {
      * - [WOZ_MODEL]: modelo Ollama (default `qwen2.5:7b-instruct`).
      * - [WOZ_TIMEOUT_SECONDS]: timeout HTTP (default 60).
      * - [WOZ_MIN_CONFIDENCE_FOR_ACCEPT]: umbral de aceptación Woz en auto (default 0.55).
+     * - [INTENT_HEURISTIC_FAST_PATH_MIN_CONFIDENCE]: fast path heurístico en auto (default 0.85).
      */
     fun createFromEnvironment(): IntentClassifierPort {
         val heuristic = HeuristicIntentClassifier(LocalIntentHeuristicLoader.load())
@@ -22,22 +21,12 @@ object IntentClassifierFactory {
             "heuristic" -> heuristic
             "woz" -> woz
             else ->
-                FallbackIntentClassifier(
-                    primary = woz,
-                    fallback = heuristic,
-                    fallbackOnResult = { wozResult ->
-                        shouldEscalateToFallback(wozResult, wozConfig.minConfidenceForAccept)
-                    },
+                CascadeIntentClassifier(
+                    heuristic = heuristic,
+                    woz = woz,
+                    heuristicFastPathMinConfidence = HeuristicFastPathPolicy.minConfidenceFromEnvironment(),
+                    wozMinConfidenceForAccept = wozConfig.minConfidenceForAccept,
                 )
         }
     }
-}
-
-private fun shouldEscalateToFallback(
-    wozResult: IntentClassification,
-    minConfidence: Double,
-): Boolean {
-    return wozResult.clarificationNeeded ||
-        wozResult.intent == IntentLabel.AMBIGUOUS ||
-        wozResult.confidence < minConfidence
 }

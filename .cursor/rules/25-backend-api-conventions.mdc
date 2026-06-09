@@ -27,7 +27,7 @@ alwaysApply: false
 
 - `POST /v1/chat/route` → `RouteChatMessageUseCase` → `IntentClassifierPort` → `BackendRouteResolver`.
 - Response includes `suggestedActions` (method, path, `implemented` flag) — does **not** execute money movement.
-- Classifiers in `api/intent/` (Woz + heuristic); config via `INTENT_ROUTER_MODE`, `WOZ_*`, optional `REPO_ROOT` for heuristic JSON.
+- Classifiers in `api/intent/` (cascade heurística → Woz → heurística en `auto`); config via `INTENT_ROUTER_MODE`, `WOZ_*`, `INTENT_HEURISTIC_FAST_PATH_MIN_CONFIDENCE`, optional `REPO_ROOT` for heuristic JSON.
 
 ## Composition root
 

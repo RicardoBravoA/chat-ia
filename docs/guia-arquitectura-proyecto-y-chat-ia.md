@@ -213,12 +213,12 @@ flowchart TD
     CLASS --> MODE{INTENT_ROUTER_MODE}
     MODE -->|woz| WOZ_ONLY[WozIntentClassifier]
     MODE -->|heuristic| HEU_ONLY[HeuristicIntentClassifier]
-    MODE -->|auto| WOZ_FB[Woz → fallback si conf < 0.55<br/>o AMBIGUOUS]
+    MODE -->|auto| CASCADE[Heurística fast path<br/>→ Woz si no<br/>→ heurística si Woz falla]
 
     SKIP --> POL
     WOZ_ONLY --> POL
     HEU_ONLY --> POL
-    WOZ_FB --> POL
+    CASCADE --> POL
 
     POL{ChatPresentationPolicy}
     POL -->|Saludo sin operación| GREET[GreetingUiBuilder]
@@ -254,7 +254,7 @@ flowchart TD
 - Corre en **Ollama** local (`qwen2.5:7b-instruct`).
 - Recibe el mensaje + historial (últimos 6 turnos).
 - Devuelve JSON: `{ intent, confidence, entities, clarification_needed, reason }`.
-- Modo `auto` (default): si Woz falla o tiene poca confianza, entra la **heurística JVM** (`local/config/intent_heuristic.json`).
+- Modo `auto` (default): **cascade** — heurística JVM primero (fast path); si no hay match claro → Woz; si Woz falla o duda → heurística otra vez. Ver [`docs/intent-routing-contract.md`](intent-routing-contract.md#cascade-heurística--llm-modo-auto).
 
 Intenciones soportadas: `CHECK_BALANCE`, `PAY_CREDIT_CARD`, `TRANSFER_*`, `VIEW_CHAT_HISTORY`, `MONTHLY_EXPENSES`, `AMBIGUOUS`, `OUT_OF_SCOPE`.
 

@@ -402,19 +402,20 @@ python3 local/scripts/simulate_intent_validation.py --interactive --record-chat
 
 | `INTENT_ROUTER_MODE` | Comportamiento |
 |----------------------|----------------|
-| `auto` (default) | Python `.joblib` → fallback heurístico si baja confianza |
-| `python` | Solo `predict_intent.py` |
+| `auto` (default) | **Cascade**: heurística (fast path) → Woz → heurística si Woz falla o duda |
+| `woz` | Solo `WozIntentClassifier` (Ollama) |
 | `heuristic` | Solo `local/config/intent_heuristic.json` |
 
 **Variables de entorno:**
 
 | Variable | Uso |
 |----------|-----|
-| `REPO_ROOT` | Raíz `ia/` (scripts + modelo) |
-| `PYTHON_BIN` | Default `python3` |
-| `INTENT_LOCAL_MIN_CONFIDENCE_FOR_ACCEPT` | Default `0.75`; por debajo → heurística |
+| `WOZ_OLLAMA_BASE_URL`, `WOZ_MODEL`, `WOZ_TIMEOUT_SECONDS` | Cliente Ollama |
+| `WOZ_MIN_CONFIDENCE_FOR_ACCEPT` | Default `0.55`; tras Woz en `auto`, por debajo → heurística |
+| `INTENT_HEURISTIC_FAST_PATH_MIN_CONFIDENCE` | Default `0.85`; heurística aceptada sin LLM |
+| `REPO_ROOT` / `INTENT_HEURISTIC_CONFIG` | Ubicación del JSON heurístico |
 
-El backend invoca `local/scripts/predict_intent.py` como subproceso; **no** embebe sklearn en JVM.
+Contrato: [`docs/intent-routing-contract.md`](intent-routing-contract.md#cascade-heurística--llm-modo-auto).
 
 ```bash
 cd backend && REPO_ROOT=.. ./gradlew :api:run
@@ -513,8 +514,9 @@ Matriz completa: [`docs/testing-matrix.md`](testing-matrix.md)
 
 | Entorno | Tecnología | Rol |
 |---------|------------|-----|
-| **Producción** | Woz + Ollama | Clasificación de intenciones en runtime |
-| **Fallback** | `intent_heuristic.json` (JVM) | Si Woz falla o baja confianza (`INTENT_ROUTER_MODE=auto`) |
+| **Producción (`auto`)** | Heurística JVM → Woz (Ollama) → heurística | Clasificación en runtime; fast path sin LLM en frases típicas |
+| **Solo LLM** | Woz + Ollama | `INTENT_ROUTER_MODE=woz` |
+| **Solo reglas** | `intent_heuristic.json` | `INTENT_ROUTER_MODE=heuristic` |
 | **Dev opcional** | `intent_eval.py --provider anthropic\|openai` | Comparar contra benchmark fijo |
 
 Slides anteriores que mencionan TF-IDF, `.joblib`, `train_intent_classifier.py` o `learn_until_pass.py` son **históricas** (pipeline sklearn retirado).
