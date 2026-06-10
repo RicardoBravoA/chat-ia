@@ -1,0 +1,436 @@
+{
+  "schemaVersion": 1,
+  "components": [
+    {
+      "id": "Column",
+      "label": "Column",
+      "atomicLevel": "atom",
+      "sduiType": "Column",
+      "sduiExportable": true,
+      "composeFile": "SduiRenderer.kt",
+      "description": "Contenedor vertical del chat SDUI. Raíz obligatoria del uiTree.",
+      "propsSchema": {},
+      "defaultProps": {},
+      "isContainer": true
+    },
+    {
+      "id": "Row",
+      "label": "Row",
+      "atomicLevel": "atom",
+      "sduiType": "Row",
+      "sduiExportable": true,
+      "composeFile": "SduiRenderer.kt",
+      "description": "Contenedor horizontal SDUI. Agrupa hijos en fila (p. ej. dos tarjetas lado a lado).",
+      "propsSchema": {},
+      "defaultProps": {},
+      "isContainer": true
+    },
+    {
+      "id": "AssistantText",
+      "label": "Assistant Text",
+      "atomicLevel": "molecule",
+      "sduiType": "AssistantText",
+      "sduiExportable": true,
+      "composeFile": "ChatBubbleChrome.kt → AssistantMessageBubble",
+      "mobileRender": "SduiRenderer → AssistantMessageBubble + Text(props.text)",
+      "description": "Burbuja del asistente con texto editable.",
+      "propsSchema": {
+        "text": { "type": "string", "label": "Texto", "multiline": true }
+      },
+      "defaultProps": {
+        "text": "Hola, ¿en qué puedo ayudarte?"
+      }
+    },
+    {
+      "id": "BalanceCard",
+      "label": "Balance Card (chat)",
+      "atomicLevel": "molecule",
+      "sduiType": "BalanceCard",
+      "sduiExportable": true,
+      "composeFile": "ChatBalanceMiniCard.kt",
+      "mobileRender": "SduiRenderer → ChatBalanceMiniCard(amountFormatted)",
+      "description": "Tarjeta de saldo en el chat.",
+      "propsSchema": {
+        "amountFormatted": { "type": "string", "label": "Monto formateado" },
+        "currency": { "type": "string", "label": "Moneda" }
+      },
+      "defaultProps": {
+        "amountFormatted": "25,000.00 PEN",
+        "currency": "PEN"
+      }
+    },
+    {
+      "id": "PayCardPanel",
+      "label": "Pay Card Panel",
+      "atomicLevel": "organism",
+      "sduiType": "PayCardPanel",
+      "sduiExportable": true,
+      "composeFile": "PayCardChatPanel.kt",
+      "mobileRender": "SduiRenderer → toPayCardChatAction() → PayCardChatPanel",
+      "description": "Panel de pago de tarjeta con deuda y modos mínimo/total.",
+      "propsSchema": {
+        "cardId": { "type": "string", "label": "ID tarjeta" },
+        "alias": { "type": "string", "label": "Alias" },
+        "lastFourDigits": { "type": "string", "label": "Últimos 4 dígitos" },
+        "cardholderName": { "type": "string", "label": "Titular" },
+        "expiryMonth": { "type": "string", "label": "Mes venc." },
+        "expiryYear": { "type": "string", "label": "Año venc." },
+        "debt": { "type": "string", "label": "Deuda" },
+        "creditLine": { "type": "string", "label": "Línea crédito" },
+        "minimumPaymentDue": { "type": "string", "label": "Pago mínimo" },
+        "statementBalanceDue": { "type": "string", "label": "Saldo estado cuenta" },
+        "currency": { "type": "string", "label": "Moneda" }
+      },
+      "defaultProps": {
+        "cardId": "card-gold-001",
+        "alias": "Oro",
+        "lastFourDigits": "1234",
+        "cardholderName": "MARIA LOPEZ",
+        "expiryMonth": "12",
+        "expiryYear": "2028",
+        "debt": "4200.0",
+        "creditLine": "10000.0",
+        "minimumPaymentDue": "420.0",
+        "statementBalanceDue": "1200.0",
+        "currency": "PEN"
+      }
+    },
+    {
+      "id": "SupportChannelsCard",
+      "label": "Support Channels",
+      "atomicLevel": "molecule",
+      "sduiType": "SupportChannelsCard",
+      "sduiExportable": true,
+      "composeFile": "OutOfScopeSupportCard.kt",
+      "mobileRender": "SduiRenderer → OutOfScopeSupportCard",
+      "description": "Canales de soporte (OUT_OF_SCOPE).",
+      "propsSchema": {},
+      "defaultProps": {}
+    },
+    {
+      "id": "InfoBanner",
+      "label": "Info Banner",
+      "atomicLevel": "atom",
+      "sduiType": "InfoBanner",
+      "sduiExportable": true,
+      "composeFile": "SduiRenderer.kt (inline Card)",
+      "mobileRender": "SduiRenderer → Card + Text(props.text)",
+      "description": "Banner informativo (transferencias no disponibles, etc.).",
+      "propsSchema": {
+        "text": { "type": "string", "label": "Texto", "multiline": true }
+      },
+      "defaultProps": {
+        "text": "Esta operación aún no está disponible en el chat."
+      }
+    },
+    {
+      "id": "GreetingCard",
+      "label": "Greeting Card",
+      "atomicLevel": "molecule",
+      "sduiType": "GreetingCard",
+      "sduiExportable": true,
+      "composeFile": "ChatGreetingCard.kt",
+      "mobileRender": "SduiRenderer → ChatGreetingCard + quick replies en actions[]",
+      "description": "Saludo con chips de quick reply.",
+      "propsSchema": {
+        "message": { "type": "string", "label": "Mensaje", "multiline": true }
+      },
+      "defaultProps": {
+        "message": "Hola. Soy tu asistente bancario. ¿Qué necesitas hoy?"
+      },
+      "defaultActions": [
+        {
+          "id": "qr-balance",
+          "label": "Ver saldo",
+          "actionType": "QUICK_REPLY",
+          "payload": { "intent": "CHECK_BALANCE" },
+          "requiresConfirmation": false
+        },
+        {
+          "id": "qr-pay",
+          "label": "Pagar TC",
+          "actionType": "QUICK_REPLY",
+          "payload": { "intent": "PAY_CREDIT_CARD" },
+          "requiresConfirmation": false
+        }
+      ]
+    },
+    {
+      "id": "ChatHistoryRow",
+      "label": "Chat History Row",
+      "atomicLevel": "molecule",
+      "sduiType": "ChatHistoryRow",
+      "sduiExportable": true,
+      "composeFile": "ChatHistoryRowCard.kt",
+      "mobileRender": "SduiRenderer → ChatHistoryRowCard",
+      "description": "Fila de historial de conversaciones.",
+      "propsSchema": {
+        "sessionLabel": { "type": "string", "label": "Etiqueta sesión" },
+        "lastMessage": { "type": "string", "label": "Último mensaje", "multiline": true },
+        "turnCount": { "type": "string", "label": "Cantidad mensajes" },
+        "timeLabel": { "type": "string", "label": "Hora" },
+        "lastIntent": { "type": "string", "label": "Última intención" }
+      },
+      "defaultProps": {
+        "sessionLabel": "Sesión #1",
+        "lastMessage": "pagar mi tc",
+        "turnCount": "4",
+        "timeLabel": "10:30 AM",
+        "lastIntent": "PAY_CREDIT_CARD"
+      }
+    },
+    {
+      "id": "SpendingCategoryRow",
+      "label": "Spending Category Row",
+      "atomicLevel": "molecule",
+      "sduiType": "SpendingCategoryRow",
+      "sduiExportable": true,
+      "composeFile": "SpendingCategoryRowCard.kt",
+      "mobileRender": "SduiRenderer → SpendingCategoryRowCard",
+      "description": "Fila de gasto por categoría.",
+      "propsSchema": {
+        "category": { "type": "string", "label": "Categoría" },
+        "transactionCount": { "type": "string", "label": "Transacciones" },
+        "totalAmountFormatted": { "type": "string", "label": "Total formateado" }
+      },
+      "defaultProps": {
+        "category": "Restaurantes",
+        "transactionCount": "12",
+        "totalAmountFormatted": "S/ 840.50"
+      }
+    },
+    {
+      "id": "PaymentReceiptCard",
+      "label": "Payment Receipt",
+      "atomicLevel": "organism",
+      "sduiType": "PaymentReceiptCard",
+      "sduiExportable": false,
+      "composeFile": "PaymentSuccessReceiptCard.kt",
+      "mobileRender": "ChatScreen local (post-pago), no SduiRenderer v1",
+      "description": "Comprobante post-pago. Hoy se renderiza local en ChatViewModel, no vía uiTree.",
+      "propsSchema": {
+        "amountPaid": { "type": "string", "label": "Monto pagado" },
+        "currency": { "type": "string", "label": "Moneda" },
+        "movementId": { "type": "string", "label": "ID movimiento" }
+      },
+      "defaultProps": {
+        "amountPaid": "420.0",
+        "currency": "PEN",
+        "movementId": "mov-abc123"
+      }
+    },
+    {
+      "id": "HomeBalanceCard",
+      "label": "Home Balance Card",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "HomeBalanceCard.kt",
+      "mobileRender": "HomeScreen → HomeBalanceCard",
+      "description": "Tarjeta de saldo en pantalla inicio (no SDUI chat).",
+      "propsSchema": {
+        "balanceLabel": { "type": "string", "label": "Saldo" }
+      },
+      "defaultProps": {
+        "balanceLabel": "S/ 25,000.00"
+      }
+    },
+    {
+      "id": "HomeTopBar",
+      "label": "Home Top Bar",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "HomeTopBar.kt",
+      "mobileRender": "HomeScreen → HomeTopBar",
+      "description": "Barra superior del home.",
+      "propsSchema": {
+        "greeting": { "type": "string", "label": "Saludo" }
+      },
+      "defaultProps": {
+        "greeting": "Hola, María"
+      }
+    },
+    {
+      "id": "PaymentHistoryCard",
+      "label": "Payment History Card",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "PaymentHistoryCard.kt",
+      "mobileRender": "HomeScreen → PaymentHistoryCard",
+      "description": "Tarjeta de movimiento en historial.",
+      "propsSchema": {
+        "title": { "type": "string", "label": "Título" },
+        "amount": { "type": "string", "label": "Monto" },
+        "dateLabel": { "type": "string", "label": "Fecha" }
+      },
+      "defaultProps": {
+        "title": "Pago tarjeta Oro",
+        "amount": "- S/ 420.00",
+        "dateLabel": "Hoy"
+      }
+    },
+    {
+      "id": "LoginFormCard",
+      "label": "Login Form",
+      "atomicLevel": "organism",
+      "sduiExportable": false,
+      "composeFile": "LoginFormCard.kt",
+      "mobileRender": "LoginScreen → LoginFormCard",
+      "description": "Formulario de login completo. Contenedor de campos (preview App; export en studioCanvas).",
+      "propsSchema": {
+        "title": { "type": "string", "label": "Título" }
+      },
+      "defaultProps": {
+        "title": "Bienvenido"
+      },
+      "isContainer": true
+    },
+    {
+      "id": "LoginEmailField",
+      "label": "Login Email Field",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "LoginEmailField.kt",
+      "mobileRender": "LoginFormCard → LoginEmailField",
+      "description": "Campo email del login.",
+      "propsSchema": {
+        "label": { "type": "string", "label": "Etiqueta" },
+        "placeholder": { "type": "string", "label": "Placeholder" }
+      },
+      "defaultProps": {
+        "label": "Correo",
+        "placeholder": "tu@email.com"
+      }
+    },
+    {
+      "id": "LoginPasswordField",
+      "label": "Login Password Field",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "LoginPasswordField.kt",
+      "mobileRender": "LoginFormCard → LoginPasswordField",
+      "description": "Campo contraseña del login.",
+      "propsSchema": {
+        "label": { "type": "string", "label": "Etiqueta" }
+      },
+      "defaultProps": {
+        "label": "Contraseña"
+      }
+    },
+    {
+      "id": "LoginSubmitButton",
+      "label": "Login Submit Button",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "LoginSubmitButton.kt",
+      "mobileRender": "LoginFormCard → LoginSubmitButton",
+      "description": "Botón ingresar.",
+      "propsSchema": {
+        "label": { "type": "string", "label": "Texto botón" }
+      },
+      "defaultProps": {
+        "label": "Ingresar"
+      }
+    },
+    {
+      "id": "ChatAssistantHeader",
+      "label": "Chat Header",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "ChatAssistantHeader.kt",
+      "mobileRender": "ChatScreen → ChatAssistantHeader",
+      "description": "Cabecera del chat con indicador en línea.",
+      "propsSchema": {
+        "title": { "type": "string", "label": "Título" }
+      },
+      "defaultProps": {
+        "title": "Asistente bancario"
+      }
+    },
+    {
+      "id": "TypingIndicator",
+      "label": "Typing Indicator",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "LoadingIndicators.kt → ChatTypingDots",
+      "mobileRender": "ChatScreen (isSending) → ChatTypingDots",
+      "description": "Puntos de escritura mientras llega SDUI.",
+      "propsSchema": {},
+      "defaultProps": {}
+    },
+    {
+      "id": "CreditCardChatVisual",
+      "label": "Credit Card Visual",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "CreditCardChatVisual.kt",
+      "mobileRender": "PayCardChatPanel → CreditCardChatVisual",
+      "description": "Visual de tarjeta (parte de PayCardPanel).",
+      "propsSchema": {
+        "alias": { "type": "string", "label": "Alias" },
+        "lastFourDigits": { "type": "string", "label": "Últimos 4" }
+      },
+      "defaultProps": {
+        "alias": "Oro",
+        "lastFourDigits": "1234"
+      }
+    },
+    {
+      "id": "PaymentModeOptionBox",
+      "label": "Payment Mode Option",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "PaymentModeOptionBox.kt",
+      "mobileRender": "PayCardChatPanel → PaymentModeOptionBox",
+      "description": "Opción pago mínimo/total.",
+      "propsSchema": {
+        "label": { "type": "string", "label": "Etiqueta" },
+        "amount": { "type": "string", "label": "Monto" }
+      },
+      "defaultProps": {
+        "label": "PAGO MÍNIMO",
+        "amount": "S/ 420.00"
+      }
+    },
+    {
+      "id": "HomeMovementsSectionHeader",
+      "label": "Movements Section Header",
+      "atomicLevel": "molecule",
+      "sduiExportable": false,
+      "composeFile": "HomeMovementsSectionHeader.kt",
+      "mobileRender": "HomeScreen → HomeMovementsSectionHeader",
+      "description": "Encabezado sección movimientos.",
+      "propsSchema": {
+        "title": { "type": "string", "label": "Título" }
+      },
+      "defaultProps": {
+        "title": "Movimientos recientes"
+      }
+    }
+  ],
+  "templates": [
+    {
+      "id": "pay-tc",
+      "label": "Pagar TC",
+      "description": "Flujo PAY_CREDIT_CARD",
+      "rootChildren": ["AssistantText", "PayCardPanel"]
+    },
+    {
+      "id": "balance",
+      "label": "Consultar saldo",
+      "description": "Flujo CHECK_BALANCE",
+      "rootChildren": ["AssistantText", "BalanceCard"]
+    },
+    {
+      "id": "greeting",
+      "label": "Saludo",
+      "description": "GREETING con quick replies",
+      "rootChildren": ["GreetingCard"]
+    },
+    {
+      "id": "clarification",
+      "label": "Clarificación",
+      "description": "AMBIGUOUS",
+      "rootChildren": ["AssistantText"]
+    }
+  ]
+}

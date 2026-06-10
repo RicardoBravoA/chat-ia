@@ -1,10 +1,12 @@
 package com.bank.mobile.presentation.sdui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -53,8 +55,30 @@ fun SduiRenderer(
                         onPayCard = onPayCard,
                         onQuickReply = onQuickReply,
                     )
-                Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
                 }
+            }
+        }
+        UiComponentType.ROW -> {
+            Column(modifier = modifier) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    node.children.forEachIndexed { index, child ->
+                        if (index > 0) {
+                            Spacer(Modifier.width(8.dp))
+                        }
+                        SduiRenderer(
+                            node = child,
+                            timestampEpochMs = timestampEpochMs,
+                            payingCardId = payingCardId,
+                            paidCardIds = paidCardIds,
+                            sduiMessageKey = sduiMessageKey,
+                            onPayCard = onPayCard,
+                            onQuickReply = onQuickReply,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
             }
         }
         UiComponentType.ASSISTANT_TEXT -> {

@@ -14,6 +14,7 @@ Aplicacion Kotlin Multiplatform con Compose Multiplatform y enfoque Clean Archit
   - Realtime con `WS /v1/chat/ws` — mobile envía `{"message":"...","sessionId":"..."}`; los chips del `GreetingCard` añaden `selectedIntent` para ir directo al SDUI sin re-clasificar (saldo, pago TC, gastos del mes, historial chat).
   - SDUI nuevos: `ChatHistoryRow` (sesiones previas) y `SpendingCategoryRow` (categoría + transacciones + total).
   - El backend devuelve textos conversacionales **grounded** (datos reales) encima de tarjetas SDUI.
+  - **SDUI Studio** (web): componer `uiTree`, preview y export JSON — [`tools/sdui-studio/README.md`](../tools/sdui-studio/README.md) (`npm run dev` en `tools/sdui-studio/`).
   - Mientras responde backend, se muestra indicador animado de escritura (`...`).
   - Pago de tarjeta desde `PayCardChatPanel` → confirmación **biométrica o bloqueo del dispositivo** → `POST /v1/credit-cards/{cardId}/payments` con `Idempotency-Key`.
   - Tras un pago exitoso, el botón **"Pagar ahora"** se deshabilita en ese mensaje; un **nuevo** mensaje en el chat (p. ej. "pagar tc") trae un panel nuevo habilitado.

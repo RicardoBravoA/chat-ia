@@ -106,7 +106,8 @@ Mapeo directo desde UI **ya existente** en mobile:
 | `GreetingCard` | `ChatGreetingCard` | `message`, `actions[]` (`QUICK_REPLY` con `payload.intent`) |
 | `ChatHistoryRow` | `ChatHistoryRowCard` | `sessionLabel`, `lastMessage`, `turnCount`, `timeLabel`, `lastIntent` |
 | `SpendingCategoryRow` | `SpendingCategoryRowCard` | `category`, `transactionCount`, `totalAmountFormatted` |
-| `Column` | contenedor | `children[]` |
+| `Column` | contenedor vertical | `children[]` |
+| `Row` | contenedor horizontal | `children[]` |
 | `TypingIndicator` | `ChatTypingDots` | — |
 
 **Regla:** no añadir `type` sin Composable en mobile y test en `SduiRendererTest`.

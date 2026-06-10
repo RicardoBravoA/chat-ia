@@ -12,6 +12,7 @@ Prioriza seguridad, auditabilidad y confiabilidad.
 | [`mobile/`](mobile/README.md) | App Compose Multiplatform (Android/iOS). | `cd mobile && ./gradlew :composeApp:installDebug` |
 | [`local/`](local/README.md) | Woz: LLM local (Ollama), benchmarks y scripts de validación. | `ollama serve` + scripts en `local/README.md` |
 | [`docs/`](docs/) | Blueprints y runbooks de validación. | — |
+| [`tools/sdui-studio/`](tools/sdui-studio/README.md) | Web para componer UI SDUI y exportar `uiTree` JSON. | `cd tools/sdui-studio && npm install && npm run dev` |
 
 ## Puesta en marcha rápida
 
@@ -83,6 +84,8 @@ Las partes son independientes. El backend arranca sin Ollama; en modo `auto` (de
 ## Documentación
 
 - [`docs/guia-arquitectura-proyecto-y-chat-ia.md`](docs/guia-arquitectura-proyecto-y-chat-ia.md) — visión general del repo, capas y flujo del chat IA (diagramas Mermaid).
+- [`docs/flujo-chat-pagar-tc.md`](docs/flujo-chat-pagar-tc.md) — flujo «pagar mi tc»: clasificador (heurística → LLM → fallback) → `PAY_CREDIT_CARD` → SDUI.
+- [`tools/sdui-studio/README.md`](tools/sdui-studio/README.md) — SDUI Studio: paleta atomic design, preview y export JSON.
 - [`docs/presentacion-negocio-chat-ia.md`](docs/presentacion-negocio-chat-ia.md) — presentación orientada a negocio (chat IA, SDUI, modelo local).
 - [`docs/presentacion-dev-chat-ia.md`](docs/presentacion-dev-chat-ia.md) — presentación para devs (entrenamiento nube/local, backend, SDUI).
 - [`docs/ai-chat-backend-blueprint.md`](docs/ai-chat-backend-blueprint.md) — diseño del chat IA sobre el backend.
